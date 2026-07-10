@@ -1,0 +1,28 @@
+# Non-redistributable audio assets — grab your own (see README)
+Soundfonts/
+Samples/
+Amps/
+IRs/
+Sources/
+*.sf2
+*.nam
+*.wav
+*.caf
+*.mp3
+*.aif
+*.aiff
+
+# Rendered output
+Tracks/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+.claude/
+.vscode/
+.idea/

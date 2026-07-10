@@ -1,0 +1,10 @@
+# The Headless Studio — Python dependencies
+# Works on macOS, Windows, and Linux (Python 3.9+).
+# FluidSynth's C library also needs a system install — see the README /
+# the book's Appendix A for per-OS instructions.
+
+pedalboard      # Spotify's headless VST3/AU plugin host + built-in effects
+pyfluidsynth    # binding to the FluidSynth synthesizer
+numpy           # audio is NumPy arrays, everywhere
+scipy           # WAV I/O, filters, oscillators
+mido            # MIDI messages for instrument plugins
