@@ -70,7 +70,7 @@ def page_shell(title, content, description=""):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(title)}</title>
 <meta name="description" content="{desc}">
-<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="/static/style.css?v=album-players-1">
 <link rel="alternate" type="application/rss+xml" title="{SITE_NAME}" href="/feed.xml">
 </head>
 <body>
