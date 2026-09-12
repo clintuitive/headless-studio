@@ -46,22 +46,28 @@ WAV tags do not automatically populate every distributor field. Inspect the
 upload form itself.
 
 For these albums, the original account records list Clintuitive and 21 stores.
-The replacement drafts follow that selection and retain the original titles
+The replacement submissions follow that selection and retain the original titles
 and artwork. Optional paid extras are separate choices; a new upload form's
 defaults are not evidence that an extra was used on the original release.
 
-At the September 12 documentation update, the replacement masters are ready
-and the forms are prepared, but the releases have not been submitted. The
-original streaming editions remain live. This is a production status, not a
-promise of a specific store delivery date.
+Both replacements were submitted successfully on September 12, 2026, using
+the verified masters and no paid extras. DistroKid is processing them for
+streaming services. The original editions no longer appear in its release
+list; their store takedowns have been requested. Neither a submission
+confirmation nor an empty distributor list proves a store has finished
+processing the change.
 
 ## Retire the old editions in a controlled sequence
 
 The intended result is one current edition of each album, without confusing
-old duplicates. First verify that replacement submission is accepted and
-resolve any delivery errors. Then request takedown of the identified original
-releases and verify the store outcome. Distribution and removal are separate
-processes; do not claim an old edition is gone just because a request was sent.
+old duplicates. Where the distributor permits it, submit the replacement
+before retiring the old edition. In this case, DistroKid rejected same-title
+submissions until the originals were deleted. The finished masters and
+metadata were prepared first, then the original takedowns were confirmed.
+Fresh upload forms cleared the stale duplicate warnings in the earlier tabs,
+and both replacements were accepted. This order can create a temporary gap
+in store availability. Distribution and removal are separate processes; do
+not claim an old edition is gone from a store just because a request was sent.
 
 Keep a small status record with original release IDs, new release IDs when
 assigned, submission state, takedown state and verified store links. Publishing
@@ -81,7 +87,7 @@ should write a local artifact; deploying should be an explicit separate step.
 A backup of the previous site makes a publishing mistake recoverable.
 
 The listening page can offer the new recordings directly while distributor
-submission is pending. Update the streaming links only when the new store
+publication is pending. Update the streaming links only when the new store
 pages are verified. Clear version labels save a listener from comparing an
 old stream with a new production description and wondering why they disagree.
 

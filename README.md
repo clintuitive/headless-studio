@@ -59,9 +59,10 @@ nonlinear shared music bus remains a group stem; its dry instrument inputs
 are available for rebalancing. Processed float stems reconstruct the float
 mix within numerical tolerance, before final PCM dither.
 
-September masters have passed technical delivery checks. The replacement
-DistroKid forms are prepared but **not submitted**; original streaming
-editions remain live. The website's rebuilt players contain the new audio.
+September masters have passed technical delivery checks. Both replacement
+albums were **submitted to DistroKid on September 12, 2026**. Store publication
+is pending, and takedowns of both originals have been requested. The website's
+rebuilt players contain the new audio.
 AI contributed writing, arrangement and code; the audio was rendered with
 Python synthesis/sample playback, without generated vocals or a generative
 audio service. Technical verification does not replace critical listening.

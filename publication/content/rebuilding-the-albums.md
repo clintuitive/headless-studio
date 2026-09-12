@@ -21,8 +21,10 @@ performance treatment. The other eleven pieces have new themes and forms.
 The sampled piano retains stereo information, with strings used selectively.
 
 [Listen to the rebuilt albums](/music.html). These are the new masters on this
-site; replacement distribution is still pending. The original streaming
-releases have not yet been removed.
+site. Both replacements were submitted to DistroKid on September 12, 2026.
+The original editions have been removed from the DistroKid release list, with
+store takedowns requested. Publication of the new editions and removal of the
+old ones are still subject to each streaming service's processing.
 
 ## What changed in the studio
 

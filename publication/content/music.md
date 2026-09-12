@@ -4,10 +4,11 @@ slug: music
 description: Listen to the rebuilt Sign-Off and The Quiet Hours, plus self-contained Python studio sketches.
 ---
 
-The rebuilt albums are available here in full. **Replacement distribution is
-pending**: these players contain the new recordings; the original streaming
-editions remain live until their replacements are submitted and the originals
-are retired. Album titles, track titles and artwork are retained.
+The rebuilt albums are available here in full. **Both replacements were submitted
+to DistroKid on September 12, 2026** and are processing for streaming services.
+Takedowns of both original editions have been requested; individual stores may
+still show them during the transition. Album titles, track titles and artwork
+are retained.
 
 Music by Clintuitive. These recordings use Python synthesis and sample
 playback, with AI assistance in writing, arrangement and production. No
@@ -86,12 +87,13 @@ external samples or plugins. FFmpeg adds the WAV/MP3 delivery exports.
 
 <h3>Night Transit</h3><audio controls preload="none" aria-label="night-transit"><source src="/downloads/portable/night-transit.mp3" type="audio/mpeg"></audio>
 
-## Original streaming editions
+## Streaming release status
 
-These links still play the **original recordings**, not the rebuilds above:
-[Sign-Off on Spotify](https://open.spotify.com/album/6ktXGM3K6nBhKfXZyaBxBi)
-and [The Quiet Hours on Spotify](https://open.spotify.com/album/2gJykdpXkl5eayFLSsMtPZ).
-They will be replaced here when the new store pages are verified.
+The new editions are submitted and awaiting store publication. Follow their
+release pages: [Sign-Off](https://distrokid.com/hyperfollow/clintuitive/sign-off-2)
+and [The Quiet Hours](https://distrokid.com/hyperfollow/clintuitive/the-quiet-hours-3).
+Direct Spotify links will be added when the new store pages are verified.
+The players above already contain the new recordings.
 
 Read [what changed](/rebuilding-the-albums.html), explore the [free book](/book.html),
 or get the [source code](https://github.com/clintuitive/headless-studio).
