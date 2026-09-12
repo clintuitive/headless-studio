@@ -6,8 +6,8 @@ description: "Create a small instrument from synthesized tones, describe it with
 ---
 
 A sample instrument has two parts: recordings and a map that tells the player
-which recording to use for each note. You can learn that entire workflow
-without extracting a commercial instrument library.
+which recording to use for each note. Build the recordings first, describe
+the zones, then feed the sampler a performance with explicit note boundaries.
 
 ## Start with an instrument we generate ourselves
 

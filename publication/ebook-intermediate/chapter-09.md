@@ -1,169 +1,99 @@
-# Chapter 9 — Humanization: The Hands Drift, the Machine Doesn't
+# Chapter 9 — Performance Timing and a Stable Beat
 
-Rebuild note: the new piano performance uses phrase-level timing and
-paired note boundaries. Both ends of a note follow the same timeline, with
-voice IDs retained through overlap. Sign-Off's drums deliberately keep a
-steady grid; random jitter is not automatically more musical. Keep a fixed
-seed for A/B comparisons, then decide by listening.
+Timing has a musical shape. A pianist can lean into a phrase, linger at its
+end, or roll a chord across the keyboard. Adding unrelated random offsets to
+every note is a poor substitute for those decisions.
 
-Render Chapter 8's arrangement exactly as written and you'll get something
-technically perfect and emotionally dead: every note precisely on the
-grid, every volume exactly as specified, every bar a clone of the last.
-Real performances live in the flaws — the few milliseconds a bassist leans
-ahead of the beat, the extra weight of a fingertip on an accented note.
-This chapter adds those flaws with a random number generator. Its thesis:
-the craft is all in restraint. The randomness must be **small**,
-**clipped**, **repeatable** — and above all **unevenly applied**, because
-the *contrast* between what drifts and what doesn't is where the life
-actually comes from.
+The studio treats performance as a step between the score and the instrument.
+The score says what happens in musical time; the performance places related
+note boundaries on a shared timeline and assigns articulation and velocity.
+The saved events are what the instrument actually receives.
 
-## The whole engine
+## Move both ends of a note
+
+The Quiet Hours renderer uses this smooth mapping, with `t` measured in seconds:
 
 ```python
-rng = np.random.default_rng(SEED)     # one seeded generator for the song
+import numpy as np
 
-def human(t, vel, t_sd=0.005, v_sd=6):
-    """Nudge a note's start time and velocity by a small random amount."""
-    nudge = rng.normal(0, t_sd)                       # bell-curve random
-    nudge = np.clip(nudge, -2.5 * t_sd, 2.5 * t_sd)   # cut off the extremes
-    t = max(t + float(nudge), 0.0)
-    vel = int(np.clip(vel + rng.normal(0, v_sd), 1, 127))
-    return t, vel
+def warp(t):
+    return t + .20 * np.sin(2 * np.pi * t / 16) + .055 * np.sin(2 * np.pi * t / 4)
 ```
 
-Eight lines. Everything else in the chapter is about how to use them.
+The long cycle creates phrase-level movement; the shorter cycle adds a smaller
+variation. These settings are choices for this record, not universal values
+for a convincing performance. The mapping remains increasing at these settings,
+so later score positions remain later in the performance.
 
-**The sizes.** `rng.normal(0, t_sd)` draws from a bell curve centered on
-zero — most nudges tiny, a few larger — with a spread (`t_sd`) of 5
-milliseconds. Is that a lot? At this song's tempo an eighth note lasts 254
-ms, so we're moving notes by about two percent of their slot: *felt*, not
-heard as sloppiness. Measured against real players, ±5 ms is a tight
-bassist on a good night — we're not simulating error, we're simulating a
-professional. Push past ±15 ms and the illusion flips: instead of a player
-breathing, you hear a machine glitching.
-
-**The clip.** Bell curves have tails — rare, large draws. One note in a
-thousand would land 20+ ms early, and a single such note reads as a
-mistake. `np.clip(x, lo, hi)` (clamp a value into a range) amputates the
-tails while keeping the natural bell shape. The extra `max(..., 0.0)`
-guards one absurd edge case: the very first note of the song drawing a
-negative start time. Across an album, every possible random draw *will*
-eventually be drawn; cheap paranoia is mandatory.
-
-**The seed.** All randomness flows from one generator started with a fixed
-`SEED`. So the "random" performance is *a take* in the fullest sense —
-render 47 is note-for-note identical to render 1, and every listening
-comparison in this book compares mixes, never accidentally-different
-performances. The seed even becomes a musical control: if this
-performance's particular constellation of nudges bothers you in the second
-chorus, `SEED = 8` is a *different take* of the same song. I've re-rolled
-a performance exactly twice across an album; both times the new take fixed
-the bar in question, and it lives in version control now, where takes live.
-
-## The contrast principle
-
-Here's what separates this chapter from the "humanize" checkbox in a DAW.
-In the darkwave band, the jitter applies to the bass and the guitars —
-**and not to the drum machine, and not to the synth pad.** The script's
-comment states the rule:
+Apply the same map to the start and end. Moving only the start changes the
+note's duration for an unrelated reason:
 
 ```python
-# Humanization: the hands drift, the machine doesn't.
+rate = 44100
+start_seconds = 2.0
+end_seconds = 3.5
+start = max(0, warp(start_seconds))
+end = max(start + .03, warp(end_seconds))
+voice_id = 17
+performed = [
+    (round(start * rate), 'on', 0, 60, 64, voice_id),
+    (round(end * rate), 'off', 0, 60, 0, voice_id),
+]
 ```
 
-Think about why. If *everything* drifts, the listener has no reference
-grid to feel the drift against — the whole song is just slightly loose.
-If *nothing* drifts, there's no life. But a drum machine ticking
-immovably while a bassist pushes eighth-notes a few milliseconds hot
-against it? That tension is a *sound* — arguably the defining sound of
-every band that ever played alongside a drum machine, which is this
-genre's entire family tree. The pad stays on the grid for a different
-reason: it's texture, not performance. Nobody "plays" a pad.
+The first field is now an integer frame position. The final field identifies
+this particular voice. Repeated notes at the same pitch can overlap without
+a later note-off accidentally ending the wrong voice. The zone sampler also
+accepts five-field events and pairs them FIFO; explicit IDs remove ambiguity
+when constructing complex performances.
 
-So the rule generalizes: **for each band member, decide — hands or
-machine — and commit.** It's a musical decision, and it changes per
-record: the synth album humanizes nearly everything (that album's fiction
-is "played live onto tape"), the darkwave record humanizes exactly three
-players.
+## Velocity and articulation have different jobs
 
-## Three more dimensions
+Write strong and weak notes into the phrase before adding variation. Velocity
+can select a different recording in a layered instrument, so a small change
+can affect attack character as well as loudness. Listen across layer boundaries
+instead of assuming the response is smooth.
 
-**Velocity is tone, not just volume.** Remember from Chapters 2 and 5
-that good sample libraries switch *recordings* based on how hard a note
-is played. So ±6 of velocity jitter doesn't make notes slightly
-louder/quieter — it varies the *attack character* hit by hit, which is
-most of what "a hand" sounds like. One discipline: write the *accents*
-into the base velocities first (downbeats 105, offbeats 96), then let
-noise perturb around them. Accents are composition; jitter is
-performance; don't let the second wash out the first.
+Articulation controls how long a note is held. In the piano renderer, supporting
+parts can release earlier than the melodic line. Apply that shortening after
+the shared time map so it remains a deliberate relationship between voices.
 
-**Duration.** Real note lengths vary even more than start times — fingers
-release early, linger late:
+Chord rolls belong in the score or performance rule. A consistent upward roll
+is a gesture; independent random offsets on every chord tone are a different
+sound. Choose the one the passage calls for.
+
+## Keep randomness local and repeatable
+
+Where the renderer uses random choices, derive a seed from the track and part:
 
 ```python
-dur = dur_beats * BEAT * 0.82 * rng.uniform(0.92, 1.08)
+import hashlib
+
+def part_rng(title, part):
+    key = (title + ':' + part).encode()
+    seed = int.from_bytes(hashlib.sha256(key).digest()[:8], 'little')
+    return np.random.default_rng(seed)
 ```
 
-The `0.82` is *articulation* — this bassline is short-and-punchy by
-intent. The ±8% (`rng.uniform` — evenly spread randomness, no bell curve
-needed here) is the hand.
+This prevents a change in one instrument from consuming another instrument's
+random sequence. It does not make every edit local within a part: inserting
+an extra draw can still change later draws from that generator. Save the
+performed events and dry audio when you need an exact comparison.
 
-**The byproducts — the best trick in the chapter.** The most persuasive
-humanization isn't jitter at all; it's the sounds a performance makes
-*besides the notes*:
+The Quiet Hours' main timing map is deterministic. It does not need per-note
+random jitter to create movement. Seeded variation is one tool, not a required
+ingredient in every performance.
 
-```python
-# Occasionally, a fret squeak as the hand shifts position between bars.
-if rng.random() < 0.28:                    # 28% of bars
-    t, vel = human(bar_t + 3.45 * BEAT, 46, t_sd=0.03)
-    add_note("gtr", t, 0.3, FRET_NOISE_CHANNEL, 60, vel)
-```
+## Let the rhythm provide a reference
 
-General MIDI instrument #120 — "Guitar Fret Noise," the joke instrument of
-every 90s sound card — earns its existence here: a quiet squeak near the
-end of about a quarter of the guitar bars, placed where a real left hand
-shifts, with extra timing looseness because squeaks aren't *played*, they
-happen. Listeners never consciously notice it. But mute that channel
-after a day of living with it, and the guitarist evaporates — what's left
-is unmistakably a sequencer. The principle travels: **model the
-byproducts, not just the product.** Breath before a sung phrase, the
-scrape of a pick on a heavy downstroke, a piano's pedal thump — every
-instrument has them, and each costs a conditional and a quiet note.
+Sign-Off places its drum attacks on the final tempo grid. Its pitched material
+passes through slowdown and warble afterward. That is an audio transformation,
+not the same operation as mapping piano note boundaries before playback.
 
-(Chapter 7's lead voice was doing humanization too, by the way — the
-pitch slide between notes and the vibrato that fades in late are
-*continuous* human behaviors, where this chapter's jitter is per-note.
-Melodic instruments carry their humanity between the notes.)
+A stable beat can make pitch drift feel intentional. Conversely, an unaccompanied
+piano phrase can carry its own timing without a drum clock. Decide which part
+provides the reference before applying timing effects across a mix.
 
-## What NOT to humanize
-
-A checklist, each entry paid for with a mistake:
-
-- **The drum machine** — covered above. Note that even its *volumes* stay
-  fixed: the real hardware had accent buttons, not touch sensitivity. A
-  velocity-humanized LinnDrum is a category error.
-- **Notes of one chord, independently.** A pad chord is one gesture; give
-  its notes independent ±5 ms nudges and you get a sloppy flam, not
-  warmth. If you want a strum, model a *strum* — a deliberate roll in one
-  direction — not noise.
-- **Structure.** Don't randomize *what* gets played per render… which the
-  fret squeak, at 28% per bar, seems to violate. The resolution: it's
-  drawn from the *seeded* generator, so the take includes its accidents,
-  reproducibly. Randomness in content is fine when it's committed to the
-  take; what's forbidden is randomness that escapes the seed and changes
-  between renders.
-
-## One architectural note
-
-`human()` runs when the events are *written* (Chapter 8's walker), not
-when audio renders. The event lists that reach the instruments are the
-finished performance, fully decided. Consequence: stems, re-renders
-through different amps, and every downstream experiment all share the
-identical performance by construction. Humanization is the last thing
-that happens to the *score*; nothing that happens to the *sound* ever
-touches timing again.
-
-The band now plays like a band. But it still sounds like six signals in
-a void — every player recorded direct into nothing. The next two chapters
-build what you can't see in the arrangement: each member's rig, and then
-the room they're all standing in.
+Listen to accents, chord attacks, note releases and transitions separately.
+Keep the performance fixed while comparing mixes, then regenerate it only when
+the timing or articulation is the thing you intend to change.

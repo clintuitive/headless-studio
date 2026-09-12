@@ -1,245 +1,79 @@
-# Chapter 3 — Real Plugins, No DAW
+# Chapter 3 — Processing Saved Audio with VST3 Effects
 
-Chapter 2 ended with a complaint: our instruments play correct notes into
-sterile air. The audio industry solved sterile air decades ago, and the
-solution is the **plugin** ecosystem — forty years of amplifier simulation,
-reverbs, compressors, and synthesizers, shipped as small installable
-programs (the formats are called VST3 and Audio Unit). Everyone assumes
-plugins belong to DAWs. They don't. A plugin is a code library with a
-standard interface; a DAW is one program that calls it, and your script can
-be another. By the end of this chapter you'll run the same neural-network
-amp simulation that professional guitarists record with — from Python, no
-window, no clicking — and learn a trick for controlling even the settings
-plugins don't officially expose.
+A plugin host takes audio in, processes it, and returns audio. That makes it a
+useful stage in a Python studio: save an instrument's performance once, then
+compare effects without asking the instrument to play again.
 
-## One import gets you a plugin host
+The basic studio does not require plugins. Start with the self-contained
+sketches in [the repository](https://github.com/clintuitive/headless-studio):
 
-Spotify maintains a Python library called
-[pedalboard](https://github.com/spotify/pedalboard) that embeds a full
-plugin host. Install it (`pip install pedalboard`), and loading a plugin is
-one call:
+```bash
+python -m pip install -r requirements.txt
+python scripts/generate_portable_samples.py --piece open-window --output-dir Tracks/demo
+```
+
+That gives you dry buses, processed stems and a float mix. Add a plugin when
+there is a particular sound you want from it, such as an amp model or a delay.
+
+## Put the plugin after the saved performance
+
+Install the optional Python host with `python -m pip install pedalboard` and
+install a plugin compatible with your operating system and processor. Plugins
+are separate software; the repository does not distribute them.
+
+This example processes an existing stereo float WAV through an effect. Replace
+the plugin path with your own installed effect:
 
 ```python
+import numpy as np
+from scipy.io import wavfile
 from pedalboard import load_plugin
 
-amp = load_plugin("/path/to/NeuralAmpModeler.vst3")
+rate, frames = wavfile.read('Tracks/demo/open-window/dry/melody.wav')
+assert frames.dtype == np.float32 and frames.ndim == 2
+channels = frames.T.copy()                 # host layout: channels × frames
+plugin = load_plugin('/path/to/effect.vst3')
+processed = plugin(channels, rate)
+assert np.isfinite(processed).all()
+wavfile.write('Tracks/effected-melody.wav', rate, processed.T)
 ```
 
-Plugins install into standard folders, so you know where to point that
-path:
+A float WAV avoids guessing the scale of integer samples. The transpose is
+just as important: SciPy reads frames by channels, while this host expects
+channels by frames. Neither operation changes the sample rate.
 
-| Platform | System-wide | Per-user |
-|---|---|---|
-| macOS | `/Library/Audio/Plug-Ins/VST3` | `~/Library/Audio/Plug-Ins/VST3` |
-| Windows | `C:\Program Files\Common Files\VST3` | — |
-| Linux | `/usr/lib/vst3` | `~/.vst3` |
+Inspect `plugin.parameters` to discover the controls the host exposes. Set
+values deliberately and record them with the mix. Parameter names and ranges
+belong to the installed plugin, so an example for one effect is not a universal
+preset for every VST3.
 
-Our running example is the free
-[Neural Amp Modeler](https://www.neuralampmodeler.com/) (NAM). NAM plays
-*capture files* — small neural networks trained to imitate a specific
-physical amplifier, made by recording the real hardware. The community has
-captured thousands of amps; the Vox AC15 and Fender Twin this book's
-records use cost nothing. Let that sink in: a neural model of a vintage
-tube amplifier, running in your script.
+## Preserve state and tails
 
-## Every knob is an attribute
+An effect may remember what happened in earlier buffers. A delay stores echoes;
+a compressor follows its envelope; an amp model can have internal state.
+Resetting the effect at every chunk changes the result. When processing in
+blocks, use the host's state-preserving mode and include enough trailing silence
+for the effect to decay. Verify that behavior with the exact host and plugin
+versions you install.
 
-A loaded plugin can tell you about itself:
+A plugin can also keep settings outside its automatable parameters. Prefer
+loading a preset saved through the plugin's supported interface. The repository's
+`music_engine/plugins.py` includes a Neural Amp Modeler helper for its specific
+preset layout; that is an adapter for a known format, not a general preset
+editor. A format change needs its own validation before use.
 
-```python
->>> amp.parameters.keys()
-dict_keys(['input_db', 'bass', 'middle', 'treble', 'output_db', ...])
-```
+## Keep the experiment comparable
 
-Each parameter — each knob you'd see in the plugin's window — becomes a
-Python attribute you can read and set:
+Change one effect setting while keeping the dry performance fixed. Match
+listening levels before choosing between versions. A louder render can seem
+more detailed even when the actual improvement is just gain.
 
-```python
-amp.input_db = -3.0    # how hard the guitar drives the amp
-```
+Save the processed bus as a float stem. If several instruments share a nonlinear
+effect, keep its combined output as a group stem: the separately processed
+inputs are not guaranteed to sum to the same result. The [mix and stem
+article](https://clintjohnson.cloud/headless-studio/stems-null-test.html) explains that boundary.
 
-Two habits will save you grief. First, check a parameter's allowed range
-before setting it (printing `amp.parameters['input_db']` shows it) —
-plugins measure knobs in decibels, percent, or arbitrary units as they
-please. Second, read the value back after setting: some plugins snap your
-value to the nearest allowed step, and the snapped value is what you'll
-actually hear.
-
-About that `-3.0`: it holds the AC15 *just below* the point where it
-starts to distort, so that how hard each note is played decides, note by
-note, whether it stays clean or barks. One number, and it's the difference
-between polite and alive.
-
-## Processing audio
-
-A loaded plugin is *callable* — you use it like a function:
-
-```python
-amped = amp(guitar_audio, 44100)    # stereo array in, stereo array out
-```
-
-Chains of effects compose with a `Pedalboard`, which is a list of effects
-that acts like a single one:
-
-```python
-from pedalboard import Pedalboard, Chorus, Delay, Reverb
-
-rig = Pedalboard([
-    Chorus(rate_hz=0.8, depth=0.2, mix=0.5),      # pedal in front of the amp
-    amp,                                           # the real VST3
-    Delay(delay_seconds=0.318, feedback=0.28, mix=0.16),
-    Reverb(room_size=0.85, wet_level=0.24, dry_level=0.76),
-])
-produced = rig(guitar_audio, 44100)
-```
-
-(`Chorus`, `Delay`, and `Reverb` here are pedalboard's built-in effects —
-no plugin files needed.) Order matters exactly like it does on a
-guitarist's floor: chorus *before* the amp gives the amp a shimmering
-signal to distort; chorus *after* the amp wobbles the already-distorted
-sound — a different, swooshier effect. In a DAW, trying both means
-re-cabling; here it's reordering a list.
-
-Pedalboard also has routing primitives — `Mix` runs branches in parallel
-and adds the results, `Chain` makes a serial branch. We'll use them in
-Part II to build a classic studio bass sound (clean signal and distorted
-signal side by side). For now just know the console-style wiring exists.
-
-## Instruments too, not just effects
-
-Some plugins *generate* sound from notes rather than processing audio.
-Those take a list of timed MIDI messages (note-on and note-off events,
-with times in seconds) plus how long to render:
-
-```python
-from mido import Message   # mido: a small library for MIDI messages
-
-notes = [Message("note_on",  note=45, velocity=100, time=0.0),
-         Message("note_off", note=45,               time=1.5)]
-audio = synth_plugin(notes, duration=3.0, sample_rate=44100)
-```
-
-This is our second instrument loader (after Chapter 2's), and it will
-matter in the next chapter when we rescue a beautiful bass instrument
-that happens to be trapped in an outdated plugin.
-
-## The setting that isn't a parameter
-
-Here's where this chapter earns its keep. NAM's most important setting —
-*which amp capture file to load* — does **not** appear in
-`amp.parameters`. Neither does a sampler plugin's sample folder or a
-reverb plugin's room file. File choices live in the plugin's saved
-*state*, and state is normally set by clicking around the plugin's window.
-We don't have a window. We have two workarounds, and together they handle
-every plugin you'll meet.
-
-### The easy way: save the state once, reuse it forever
-
-Pedalboard exposes the plugin's entire saved state as a chunk of raw bytes
-called `preset_data` — and it's writable. So: open the plugin's real
-window *once* on your own machine, click what needs clicking, then keep
-the bytes:
-
-```python
-plugin.show_editor()          # opens the actual plugin window; configure it
-with open("ac15_setup.preset", "wb") as f:
-    f.write(bytes(plugin.preset_data))
-
-# From then on, in any script, no window:
-amp = load_plugin(NAM_PATH)
-amp.preset_data = open("ac15_setup.preset", "rb").read()
-```
-
-This works for any plugin, and if your rig never changes, it's all you
-need.
-
-### The powerful way: edit the bytes
-
-The easy way freezes your choice. But Chapter 1 promised for-loops over
-amps — *programmatically* swapping capture files. For that we have to open
-the black box.
-
-It's less scary than it sounds. The preset bytes have a documented outer
-structure, and inside, NAM stores its settings in a simple pattern: a
-marker string, then some length-prefixed text fields — including *the file
-path of the amp capture*. "Length-prefixed" means each text field is
-stored as a number (how many bytes of text) followed by the text itself.
-So the surgery is: find the marker, skip one field, and replace the next
-field with our own path — updating its length number to match.
-
-Python's built-in `struct` module does the byte-level reading and writing.
-Two calls cover everything: `struct.unpack("<i", data)` reads bytes as a
-number, and `struct.pack("<i", n)` writes a number as bytes (the `"<i"`
-describes the number format — a standard 4-byte integer).
-
-```python
-import os, struct
-from pedalboard import load_plugin
-
-def load_nam(vst3_path, model_path):
-    """Load the NAM plugin with a chosen amp capture pre-selected."""
-    p = load_plugin(vst3_path)
-    data = bytes(p.preset_data)
-
-    # The preset's table of contents lives at a fixed offset and tells us
-    # where the plugin's own state ("component chunk") ends.
-    comp_end = struct.unpack("<q", data[40:48])[0]
-    comp, tail = data[48:comp_end], data[comp_end:]
-
-    # Find the marker, skip the version field, land on the model path.
-    marker = b"###NeuralAmpModeler###"
-    i = comp.index(marker) + len(marker)
-    version_len = struct.unpack("<i", comp[i:i + 4])[0]
-    i += 4 + version_len
-    old_len = struct.unpack("<i", comp[i:i + 4])[0]
-
-    # Splice in our path, with its length in front.
-    path = os.path.abspath(model_path).encode()
-    comp = comp[:i] + struct.pack("<i", len(path)) + path \
-                    + comp[i + 4 + old_len:]
-
-    # Our splice changed the chunk's size, so the table of contents at the
-    # end must be rebuilt to match — otherwise the plugin silently ignores
-    # the whole preset. (Full walkthrough of this stanza in Appendix C.)
-    n = struct.unpack("<i", tail[4:8])[0]
-    entries = b""
-    for k in range(n):
-        e = tail[8 + k * 20:8 + (k + 1) * 20]
-        chunk_id = e[:4]
-        if chunk_id == b"Comp":
-            off, size = 48, len(comp)
-        else:
-            off = 48 + len(comp)
-            size = struct.unpack("<qq", e[4:20])[1]
-        entries += chunk_id + struct.pack("<qq", off, size)
-
-    p.preset_data = (data[:40] + struct.pack("<q", 48 + len(comp)) + comp
-                     + b"List" + struct.pack("<i", n) + entries)
-    return p
-
-amp = load_nam(NAM_VST3, "captures/Vox_AC15_TopBoost.nam")
-```
-
-Every guitar and bass note on this book's records passes through that
-function. And note the failure mode the table-of-contents rebuild
-prevents: get it wrong and there's **no error** — the plugin just quietly
-uses its default sound. When byte surgery misbehaves, suspect the
-bookkeeping before the splice.
-
-If you ever need this trick on a different plugin: save two presets that
-differ only in the file path, and compare the bytes. The region that
-differs *is* the path field, and the bytes around it reveal the pattern.
-
-## Practical notes
-
-- **A plugin instance is stateful.** Don't share one instance between two
-  effect chains; load a fresh one per chain. Loading is cheap.
-- **Some plugins report latency** (they delay the signal to look ahead);
-  pedalboard compensates automatically when rendering.
-- **Determinism holds.** Amp sims, EQs, and compressors give identical
-  output for identical input — your renders stay reproducible.
-
-Two loaders down. But this chapter quietly assumed the plugin *loads* on
-your machine. The best bass instrument I know is built for a kind of
-processor my Mac doesn't have — and the next chapter is about refusing to
-take that for an answer.
+Plugin loading is lazy in the shared engine. Readers can use the sampler and
+synthesis examples without configuring an optional host. If a plugin requires
+a different runtime, move that one rendering step across a [process
+boundary](https://clintjohnson.cloud/headless-studio/incompatible-plugins-out-of-process.html).

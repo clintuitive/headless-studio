@@ -1,11 +1,11 @@
-# The Headless Studio — intermediate-reader edition
+# The Headless Studio — intermediate edition
 
-This folder is the **accessible rewrite** of the manuscript, targeted at an
-intermediate programmer with surface-level Python knowledge. Python idioms
-and audio terms are explained on first use; some code samples are simplified
-for readability. This is the edition intended for publication.
+The maintained manuscript for the website and EPUB explains a studio built
+from score data, performed sources, processed stems and delivery files. It is
+written for an intermediate programmer with introductory Python knowledge.
 
-This is the maintained publication source for the website and EPUB. The original,
-denser draft in `../ebook/` is archival, not the technical source of truth.
-The September 2026 revision documents the rebuilt album workflow and corrects
-older claims about mixing, stem reconstruction and AI contribution.
+Start with the self-contained sketches and sampler demo. Optional plugin and
+SoundFont chapters explain additional instrument paths; the album chapters
+cover the documented synthesis and licensed sample sources. Code fragments
+illustrate the surrounding concept unless explicitly presented as complete
+commands or programs. The scripts in the repository are the runnable source.

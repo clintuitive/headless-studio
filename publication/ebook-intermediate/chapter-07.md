@@ -1,197 +1,117 @@
-# Chapter 7 — Building Sound From Scratch (and Making It Wobble)
+# Chapter 7 — Synthesis from a Few Sine Waves
 
-Part I ends with the instrument that ships with nothing: sounds built
-directly from math. Why bother, when the last five chapters handed you a
-studio's worth of instruments? Two honest reasons. **Control** — a
-synthesized voice exposes everything (pitch, brightness, envelope, drift)
-as a parameter your code can play with. And **period truth** — one of this
-book's albums is a nostalgic 1983 synth record, and in 1983 the sounds
-*were* raw sawtooth waves, brand-new digital bells, and square-wave
-arpeggios, all warped by the tape they were recorded to. This chapter
-builds that album's entire instrument rack — five voices, a tape-wobble
-engine, and a hiss bed — in about a hundred lines, and closes with an
-honest note about the corner we're cutting.
+A synthesized source starts with numbers rather than a recorded instrument.
+That makes it a useful first render: there is no plugin to install and no sample
+library to locate. The portable sketches use a few sine waves, envelopes and
+noise to build complete arrangements.
 
-## Oscillators: sound is a repeating shape
+Run one from the repository root:
 
-Pull up a tone generator and you're hearing an **oscillator**: a wave
-shape repeating fast enough to be a pitch (440 repetitions per second is
-the A above middle C). The shape determines the character:
-
-- **Sine** (`np.sin`) — pure, round, no edge. Sub-bass and soft flutes.
-- **Sawtooth** (`scipy.signal.sawtooth`) — a ramp; bright and buzzy. The
-  classic analog synth string/brass sound.
-- **Square** (`np.sign(np.sin(...))`) — hollow, woody, video-game-y.
-
-Generating one *at a fixed pitch* is a one-liner. But every interesting
-voice in this chapter bends its pitch over time — slides, vibrato, tape
-drift — and there's a trap waiting there. You might write:
-
-```python
-sig = np.sin(2 * np.pi * freq_array * t)     # WRONG for changing pitch
+```bash
+python scripts/generate_portable_samples.py --piece open-window --output-dir Tracks/demo
 ```
 
-That formula assumes the frequency was `freq_array[i]` *for all time up to
-sample i* — so when the frequency moves, the pitch lurches absurdly. The
-fix is one idea from calculus put into one line of NumPy: **a wave's
-phase — how far along its cycle it is — is the running total of its
-frequency.** Running total = `np.cumsum` (cumulative sum):
+Open Window is the sparse, beatless example. Afterimage and Night Transit add
+percussion and use different tempos, melodies and amounts of pitch movement.
+All three expose composition and mix settings in one file.
+
+## Frequency, phase and time
+
+A MIDI note number identifies a pitch. Note 69 is A at 440 Hz, and twelve
+semitones double the frequency:
 
 ```python
-phase = 2 * np.pi * np.cumsum(freq_array) / SR   # accumulate the frequency
-sig = np.sin(phase)                              # then shape it
+import numpy as np
+rate = 44100
+note = 69
+seconds = 2.0
+frequency = 440 * 2 ** ((note - 69) / 12)
+t = np.arange(round(seconds * rate)) / rate
+signal = np.sin(2 * np.pi * frequency * t)
 ```
 
-Internalize this pattern — *build the per-sample frequency array, cumsum
-it, apply the wave shape* — and every analog trick below becomes easy.
-It's this chapter's version of Chapter 2's render loop.
+`t` is an array of times, one per frame. Multiplying time by frequency counts
+cycles; multiplying by `2 * pi` converts cycles to radians, the input expected
+by `np.sin`. NumPy evaluates the expression for the entire array.
 
-## The tape-wow engine
-
-What makes cheap oscillators feel alive is *instability*, and the most
-flattering instability is the kind an old tape machine adds: slow,
-compound pitch drift, called **wow**. Every voice in this rack draws its
-frequency through this little engine:
+A sine wave has one frequency. Add another at twice the frequency and the
+sound becomes brighter without changing its fundamental pitch:
 
 ```python
-class Synth:
-    """Every note's pitch drifts on two slow sine waves ("LFOs" — low-
-    frequency oscillators). `wobble` scales the depth per song."""
-
-    def __init__(self, rng, wobble=1.0):
-        self.rng = rng            # the song's seeded random generator
-        self.wob = wobble
-
-    def _freq(self, f0, n):
-        t = np.arange(n) / SR
-        p1, p2 = self.rng.uniform(0, 2 * np.pi, 2)    # random start phases
-        drift = (0.0012 * np.sin(2 * np.pi * 0.31  * t + p1)
-               + 0.0007 * np.sin(2 * np.pi * 0.077 * t + p2)) * self.wob
-        return f0 * (1.0 + drift)     # base pitch, bent by ±0.1-ish percent
+signal += 0.28 * np.sin(2 * np.pi * 2 * frequency * t) * np.exp(-t * 3)
 ```
 
-Read the numbers like a spec sheet. Two drift waves: one wobbling 0.31
-times per second at ±0.12% depth (a slightly worn tape-drive motor), one
-at 0.077 Hz and ±0.07% (the slower breathing of tape tension). Both are
-far below the speed of vibrato, which is why the ear reads them as
-*atmosphere*, not effect.
+The second harmonic decays faster than the fundamental. That gives the attack
+a brighter character than the tail, which is more useful for a struck sound
+than a static blend of oscillators.
 
-Random starting phases per note make oscillators drift independently. This
-can create a useful chorus-like shimmer, but it is not a model of one shared
-tape transport: that transport changes playback time for the recorded mix
-together. The rebuilt Sign-Off uses resampling of pitched source buses for
-its broadcast movement and leaves drum timing on a separate clock. The
-seeded generator makes the chosen performance repeatable.
+## An envelope makes a note
 
-`wobble` is set per song. The confident opener runs 1.0. A queasy
-interlude titled "Vertical Hold" runs 2.2 — and the mood shift from that
-one number is remarkable.
-
-## The voice rack
-
-Five voices cover the whole record. Each is a dozen lines; each encodes a
-piece of synth history. Two shown in full, three sketched:
-
-**The pad** — the lush sustained chord bed:
+An oscillator does not know when a note should start or stop. An envelope is
+an array of gains that gives the sound a shape:
 
 ```python
-    def pad(self, midi, dur):
-        n = int(dur * SR)
-        f = self._freq(440 * 2 ** ((midi - 69) / 12), n)   # note -> Hz
-        ph = 2 * np.pi * np.cumsum(f) / SR
-        sig = (sawtooth(ph * 1.0035)      # two saws, detuned a third of
-             + sawtooth(ph * 0.9965)      #   a percent apart: instant width
-             + 0.5 * np.sin(ph * 0.5))    # quiet sine an octave below: floor
-        env = adsr(n, dur * 0.3, 0.2, 0.85, dur * 0.35)    # slow swell
-        return lowpass(sig * env, 1300) / 2.5              # darken, level
+attack = 1 - np.exp(-t / 0.008)
+decay = np.exp(-t / 0.6)
+release = np.clip((seconds - t) / 0.05, 0, 1)
+signal *= attack * decay * release
 ```
 
-Two slightly-detuned sawtooths is *the* analog pad recipe — their slow
-beating against each other is the lushness. The envelope's attack scales
-with the note's duration (`dur * 0.3`), so long pad notes bloom slowly and
-short ones still speak. Downstream this bus gets a chorus effect, and the
-album script's comment says why in six words: *"the Juno move: chorus
-makes the pad"* — how a famously modest 1982 synthesizer made its one
-oscillator sound huge.
+The attack rises quickly, the decay falls gradually, and the release brings
+the final samples toward zero. Abruptly cutting a waveform away from zero can
+create a click. For a pad, use a slower attack and release; the portable
+renderer uses a different envelope for its sustained harmony voice.
 
-(The helpers: `adsr` builds the classic attack/decay/sustain/release
-volume envelope by gluing straight-line ramps together; `lowpass` wraps
-SciPy's filter functions — "remove frequencies above this cutoff." Both
-are ten lines, in the companion code.)
+These time constants are artistic parameters. Compare them over an actual
+phrase, because a pleasant isolated note can obscure the next one when its
+tail is too long.
 
-**The bell** — 1983's brand-new sound, FM synthesis:
+## Place the sound on a bus
+
+The studio's working buses use channels by frames. A stereo bus has shape
+`(2, frame_count)`. Place a mono note at its start frame and distribute it
+between left and right channels. The portable renderer uses equal-power pan:
 
 ```python
-    def bell(self, midi, dur):
-        n = int(dur * SR)
-        t = np.arange(n) / SR
-        f = self._freq(440 * 2 ** ((midi - 69) / 12), n)
-        ph = 2 * np.pi * np.cumsum(f) / SR
-        index = 2.2 * np.exp(-t / (dur * 0.35))       # how hard to modulate,
-        sig = np.sin(ph + index * np.sin(3.53 * ph))  #   fading over time
-        return sig * np.exp(-t / (dur * 0.5)) * adsr(n, 0.005, 0.1, 0.8, 0.2) / 1.4
+pan = -0.2                         # -1 left, 0 center, +1 right
+angle = (pan + 1) * np.pi / 4
+stereo_note = signal[None, :] * np.array([[np.cos(angle)], [np.sin(angle)]])
 ```
 
-One sine wave bending the phase of another — that's **FM synthesis**, the
-technology of the Yamaha DX7 that had just hit the shops in our album's
-year. The modulation amount (`index`) decays over the note, which is what
-makes it a *bell*: bright metallic attack mellowing into a pure tone. And
-the magic constant 3.53 — the ratio between the two sines — is chosen to
-be *not* a whole number: that's what makes the overtones clang like metal
-instead of humming like an organ. (The DX7 had six sines to our two; now
-you know what the other four were for.)
+`signal[None, :]` adds a one-row dimension. Multiplying by the two gains makes
+two channels. Reserve space in the song bus for the note's release before
+adding it at its scheduled position.
 
-**The lead** melody voice adds two *performance* behaviors: an 80 ms
-pitch slide from the previous note (the way a mono synth glides when you
-play legato) and vibrato that only fades in a third of a second into each
-note — because that's what a player's wrist does. That late-vibrato ramp
-does more for "a human is playing this" than any tone shaping. **The
-arp** is a square wave with a sharp exponential fade, plucky and
-video-game-adjacent. **The bass** is nearly a pure sine with a whisper of
-overtone — the polite foundation a nostalgic record wants.
+## Pitch movement belongs to a routing decision
 
-And under every track, a **tape hiss bed**: filtered noise at whisper
-level, its volume breathing on a 20-second cycle. It reads as "machine in
-the room" long before it reads as "noise," and its absence is
-conspicuously *digital*.
+The portable sketches move the read position of the harmony and melody buses
+with a slow sinusoid. Interpolating between sample positions creates a small
+continuous change in pitch. The drums bypass that movement.
 
-## Where these plug in
+Sign-Off extends this idea with source resampling, tape motion, dropouts,
+filtering and noise. It assigns a different treatment to each track. Keep a
+steady drum clock when the contrast between stable rhythm and unstable pitched
+material is part of the sound.
 
-A voice returns a mono array; placing it on a bus is the same "add it at
-sample position t" arithmetic as placing a drum hit; the buses flow into
-the same effects and mix stages as every other chapter's instruments.
-That's the note to end Part I on: synthesis isn't a separate studio.
-It's the sixth loader plugged into the same four sockets — events, buses,
-effects, mix — that the other five use.
+The Quiet Hours uses performance timing instead: note boundaries follow a
+phrase-level timeline before the piano and strings render. Chapter 9 explains
+why these are different operations even though both can make rigid material
+feel less static.
 
-## The honest footnote: aliasing
+## Respect the available frequency range
 
-The perfect sawtooth has infinitely many overtones; digital audio can only
-represent frequencies up to half the sample rate. Generate a naive
-sawtooth and the overtones past that limit don't vanish — they *fold back*
-down into the audible range as inharmonic garbage, called **aliasing**.
-Textbook synthesis uses cleverer oscillators that avoid it.
+Digital audio represents frequencies below half its sample rate, called the
+Nyquist frequency. A harmonic above that boundary can fold into the audible
+range as aliasing. Filtering the resulting signal cannot selectively remove
+an alias that already overlaps the musical frequencies.
 
-These older sawtooth examples are deliberately simple and can alias. A
-low-pass filter after generation cannot remove aliases that have already
-folded into the audible passband. A dark sound is not proof of a clean source.
+The portable oscillator uses a small number of sine partials within a bounded
+note range. If you extend its pitch range or add harmonics, omit partials that
+would reach Nyquist. A naive sawtooth or square wave has infinitely many
+harmonics; use a suitable band-limited oscillator or a carefully filtered
+oversampling design for those sources.
 
-For a small teaching oscillator, sum only harmonics below Nyquist. For more
-complex waveforms, use an appropriate band-limited oscillator or oversample
-with proper anti-alias filtering before downsampling. Oversampling reduces
-the problem; it does not make an infinite-harmonic waveform automatically
-alias-free. Listen across the full register you intend to use.
-
-The new portable examples use a small number of sine partials in a bounded
-note range. They are a simpler starting point than copying the old sawtooth
-rack and assuming its sound is correct for every pitch.
-
----
-
-Part I is complete: a synthesizer you can script, real plugins, rescued
-plugins, an unlocked sample library with its own sampler, eight drum
-machines, and now raw synthesis — six instrument loaders, one event
-format, one bus convention. Part II puts players behind the instruments:
-the arrangement that tells everyone what to play, the imperfections that
-make hands sound like hands, each member's rig, and the shared room that
-turns six audio files into a band.
+Save the synthesized dry buses before adding the room or master gain. A
+synthesis change needs a source render. A room-balance change can reuse those
+buses. The same separation works whether a note came from an equation, a
+SoundFont, a zone map or a plugin.

@@ -5,7 +5,7 @@ listener follows, how close it feels, and what gets out of the way. In a Python
 studio those decisions appear as gains, filters, envelopes and effects, but
 the job is the same as moving faders: listen, change one relationship, compare.
 
-The rebuilt albums use separate stages: score, dry performance, mix, and
+The albums use separate stages: score, dry performance, mix, and
 delivery. Saving the boundary between stages makes revision much faster. A
 piano balance change should not require playing every sampled note again.
 
@@ -27,11 +27,10 @@ mix = sum(stems.values())
 
 These gains describe the last balance stage, not the whole mix. The choice of
 sample, velocity, note length, filter and room send already shaped the sound.
-For *The Quiet Hours*, the approved Slow Rain audition established a fixed
-piano/string calibration. Applying that calibration across the record avoids
-normalizing every quiet gesture into an equally loud one. The renderer stores
-the measured reference values as constants; it does not require private
-comparison files to reproduce them.
+For *The Quiet Hours*, fixed gains keep the strings behind the piano across
+the record. In the Slow Rain reference the strings sit about 14 dB below the
+piano by whole-track RMS. The gains are explicit constants in the renderer;
+final delivery gain scales the combined mix without normalizing each gesture.
 
 *Sign-Off* needs a different routing decision. Its pitched instruments pass
 through the damaged broadcast treatment together. The drums bypass the timing
@@ -52,7 +51,7 @@ LUFS describes a whole program. Sample peak is the largest stored sample;
 true peak estimates the reconstructed waveform between samples. A file can
 have acceptable sample peaks and still produce higher peaks after conversion.
 
-The rebuilt records use project targets of −22 LUFS, with selected interludes
+The records use project targets of −22 LUFS, with selected interludes
 and closers at −23 LUFS, and a −1.2 dBTP ceiling. These are artistic choices
 for these recordings, not universal streaming requirements. The exporter
 measures the float mix with FFmpeg, then chooses one linear gain:
@@ -86,7 +85,7 @@ too early in the musical phrase.
 
 ## The exact stem contract
 
-The rebuilt sessions contain three useful layers:
+The sessions contain three useful layers:
 
 - Dry buses preserve the rendered performance before the mix effects.
 - Processed float stems reconstruct the saved float mix.

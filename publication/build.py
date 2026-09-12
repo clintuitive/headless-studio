@@ -98,7 +98,7 @@ CTA = f"""
   <p>I write about driving real studio tools — VST3 plugins, amp sims, samplers —
   entirely from Python. No fluff, always working code.</p>
   <p class="cta-small">Start with the self-contained examples.
-  Older plugin rigs need their documented platform setup and assets.</p>
+  Optional plugin rigs need their documented platform setup and assets.</p>
   <form action="https://buttondown.com/api/emails/embed-subscribe/headlessstudio"
         method="post" class="subscribe">
     <input type="email" name="email" placeholder="you@example.com" required>
@@ -217,9 +217,9 @@ def build_book(site_dir):
   <p>The whole system, free and complete: {len(chap_items)} chapters and
   {len(appx_items)} appendices, written for an intermediate programmer with no
   audio background. It walks the entire pipeline — hosting plugins headlessly,
-  rescuing incompatible ones, mapping your own sample instruments, synthesis
+  isolating instrument runtimes, mapping your own sample instruments, synthesis
   from scratch, arranging as data, mixing, and verifying float stems against
-  the working mix. Updated September 2026 with the album rebuilds. The code is
+  the working mix. It follows the complete album workflow. The code is
   <a href="{GITHUB_URL}">free and open on GitHub</a>.</p>
   <p class="book-actions">
     <a class="btn" href="/book/the-headless-studio.html">Read online</a>

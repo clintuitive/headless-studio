@@ -36,12 +36,12 @@ def build():
     nav='<nav epub:type="toc" id="toc"><h1>Contents</h1><ol>'+''.join(f'<li><a href="{name}.xhtml">{html.escape(title)}</a></li>' for name,title,_ in parts)+'</ol></nav>'
     entries={f'EPUB/{name}.xhtml':body for name,_,body in parts}
     entries['EPUB/nav.xhtml']=document('Contents',nav)
-    entries['EPUB/cover.xhtml']=document('The Headless Studio','<h1>The Headless Studio</h1><p>Clint Johnson · Intermediate edition · September 2026 revision</p><img src="cover.jpg" alt="The Headless Studio book cover"/>')
+    entries['EPUB/cover.xhtml']=document('The Headless Studio','<h1>The Headless Studio</h1><p>Clint Johnson · Intermediate edition</p><img src="cover.jpg" alt="The Headless Studio book cover"/>')
     manifest='<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="coverpage" href="cover.xhtml" media-type="application/xhtml+xml"/><item id="cover" href="cover.jpg" media-type="image/jpeg" properties="cover-image"/><item id="css" href="style.css" media-type="text/css"/>'
     manifest+=''.join(f'<item id="{name}" href="{name}.xhtml" media-type="application/xhtml+xml"/>' for name,_,_ in parts)
     spine='<itemref idref="coverpage"/><itemref idref="nav"/>'+''.join(f'<itemref idref="{name}"/>' for name,_,_ in parts)
     modified=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
-    opf=f'''<?xml version="1.0" encoding="utf-8"?><package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="book-id"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="book-id">urn:headless-studio:intermediate:2026-09</dc:identifier><dc:title>The Headless Studio</dc:title><dc:creator>Clint Johnson</dc:creator><dc:language>en</dc:language><dc:description>Intermediate edition, revised September 2026.</dc:description><meta property="dcterms:modified">{modified}</meta></metadata><manifest>{manifest}</manifest><spine>{spine}</spine></package>'''
+    opf=f'''<?xml version="1.0" encoding="utf-8"?><package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="book-id"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="book-id">urn:headless-studio:intermediate</dc:identifier><dc:title>The Headless Studio</dc:title><dc:creator>Clint Johnson</dc:creator><dc:language>en</dc:language><dc:description>A practical guide to music production with Python.</dc:description><meta property="dcterms:modified">{modified}</meta></metadata><manifest>{manifest}</manifest><spine>{spine}</spine></package>'''
     ET.fromstring(opf)
     out=ROOT/'downloads/the-headless-studio.epub';out.parent.mkdir(exist_ok=True)
     with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as z:

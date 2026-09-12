@@ -1,15 +1,22 @@
 # Chapter 1 — The Case for a Headless Studio
 
-September 2026 revision: start with `scripts/generate_portable_samples.py`
-for an example needing only NumPy and SciPy. FFmpeg adds distribution WAV
-and MP3 exports. Older plugin rigs in this book need additional assets and
-platform setup. Chapters 12–15 describe the rebuilt albums and distinguish
-verified delivery from musical approval.
+A headless studio turns musical decisions into data and audio-processing steps.
+Start with a complete example, then inspect the files each stage produces:
+
+```bash
+python -m pip install -r requirements.txt
+python scripts/generate_portable_samples.py --piece afterimage --output-dir Tracks/demo
+```
+
+This example needs NumPy and SciPy. FFmpeg adds delivery exports. The following
+chapters explain optional instrument runtimes, sample maps, synthesis,
+arrangement, performance, mixing and publication. The complete scripts live
+in the repository; short fragments isolate the concept being discussed.
 
 ## Take 47 is a diff
 
 Here is a complete, honest description of how I changed the guitar sound on
-one of my songs last month:
+one of my songs:
 
 ```diff
 -GUITAR_AMP = AMP_TWIN
@@ -225,4 +232,4 @@ Let's build the instruments.
 
 ---
 
-*Next — Chapter 2: A Synthesizer You Can Script.*
+*Next — Chapter 2: Rendering Note Events with FluidSynth.*

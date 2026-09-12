@@ -1,128 +1,110 @@
-# Chapter 13 — Rebuilding Two Albums Without Repeating One Song
+# Chapter 13 — Two Albums, Distinct Musical Identities
 
-An album generator can produce twelve files without producing twelve distinct
-pieces. That was the uncomfortable finding when revisiting *Sign-Off* and
-*The Quiet Hours*. The code ran, but too much of the writing shared the same
-shape, and the mixes did not support the intended character. Some motifs were
-repeated exactly. Different titles and random seeds were not enough.
+An album renderer needs a shared engine and individual songs. Reusing sample
+loading, event scheduling and export code makes work easier. Reusing a complete
+form for every title can make a record feel like one long variation.
 
-This revision began with listening feedback rather than more randomization.
-Clint wanted Sign-Off to feel like vaporwave: an imperfect late-night
-broadcast, with room for lush, dreamy pieces. For The Quiet Hours, Slow Rain
-was the one composition he wanted to hear again. The other eleven could be
-rewritten. Album titles, track titles and artwork stayed the same.
+Sign-Off and The Quiet Hours demonstrate two palettes built on the same staged
+workflow. Sign-Off is an imperfect late-night broadcast: steady drum attacks,
+worn pitched sources and space for dreamy ambient pieces. The Quiet Hours puts
+piano in front, with strings used selectively and timing shaped around phrases.
 
-## Choose a direction with short comparisons
+## Give each track a reason to exist
 
-The first comparisons held a short musical passage constant while changing
-the treatment. Sign-Off's preferred version was called Broadcast, with more
-warble and defects. Its drums felt distracting, however. A second comparison
-kept drum attacks on a steady clock and out of the warped music path. That
-refinement became the reference.
+The Sign-Off specifications hold individual chord banks, motifs, answers,
+section lists and production settings. Rabbit Ears and Vertical Hold use the
+heaviest warble. Other tracks use gentler movement, thinner textures or fewer
+drums. A strong identity does not require the same intensity everywhere.
 
-The Quiet Hours comparison called Reperformed retained Slow Rain's writing
-while changing performance and balance. It was selected because it still felt
-like the same song. This is a useful boundary: preserving the notes does not
-require preserving every sample choice, timing decision or fader level.
+The Quiet Hours varies meter, register, piano pattern, phrase length and string
+entrances. Slow Rain uses its own event-writing path; the other tracks have
+explicit specifications in `scripts/album_v2/quiet_hours.py`. Shared playback
+does not require identical composition machinery.
 
-Do not treat an approved excerpt as approval of every future decision. It
-establishes a direction. Full arrangements can reveal repetition, transitions
-and fatigue that a minute-long comparison cannot show.
+Before rendering, describe the lead idea and the role of each section. A score
+table can expose repeated forms, but different parameter values alone do not
+prove musical contrast. Listen to the sequence and ask what each track adds.
 
-## Write an identity for each track
+## Prepare the instruments
 
-A shared palette makes an album coherent. A shared complete form makes it
-predictable. Before rendering, specify how each track differs in several
-musically meaningful ways: phrase length, harmonic movement, texture, density,
-register, drum pattern, where the lead enters, and what the ending resolves.
-
-The new Sign-Off score holds individual chord banks, motifs, answers and
-section lists. Only Rabbit Ears and Vertical Hold use the heaviest warble
-setting. Other tracks leave more space, use gentler movement, or omit drums.
-The exact choices are in `scripts/album_v2/sign_off.py`; the point is not to
-maximize a count of unique parameter values. Each difference must be audible
-and serve the sequence.
-
-The Quiet Hours gives eleven pieces new themes and forms. Slow Rain uses its
-original event writing with the selected expressive performance. Strings are
-selective support rather than an automatic layer under every piano. See
-`scripts/album_v2/quiet_hours.py` and the performance functions in `render.py`.
-
-A score table can expose accidental duplication before a costly render. Tests
-check form variety and event validity, but they cannot judge whether two
-melodies feel emotionally interchangeable. That remains an audition task.
-
-## Separate score, performance, mix and delivery
-
-The full renderer writes the decisions as well as the sound:
-
-```text
-Sessions/02 Slow Rain/
-    score.json
-    dry/piano.wav
-    dry/strings.wav
-    stems/piano.wav
-    stems/strings.wav
-    stems/room.wav
-    mix-float.wav
-    manifest.json
-Masters/02 Slow Rain.wav
-Listening/02 Slow Rain.mp3
-```
-
-Dry buses are the expensive performed sources. Processed stems are the mix
-handoff described in Chapter 12. The manifest records the score specification,
-code fingerprint, asset hashes, render time and delivered audio hash.
-
-From the public repository, run one track before committing to a full album:
+The Quiet Hours uses Salamander Grand Piano and VSCO Community Edition strings.
+Run the preparation script and preflight from the repository root:
 
 ```bash
-python scripts/album_v2/render.py --album sign-off --track 2 \
-  --asset-root /path/to/studio-assets --output-dir Tracks/rebuilt
+python scripts/prepare_open_instruments.py --asset-root /path/to/studio-assets
+python scripts/check_album_assets.py --album quiet-hours --asset-root /path/to/studio-assets
 ```
 
-The asset root contains `Samples/`. Sign-Off needs the three LM-2 one-shots
-listed in the renderer. The website revision of The Quiet Hours uses the prepared Salamander piano
-and VSCO string manifests and WAVs under `Samples/OpenPiano` and
-`Samples/OpenStrings`. These libraries are not redistributed
-with the code. Run `python scripts/prepare_open_instruments.py --asset-root
-/path/to/studio-assets` to download pinned sources and prepare the required zones.
-Salamander is by Alexander Holm (mapping by kinwie, retuning by Markus Fiedler),
-under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/); preserve these
-credits and describe your changes when sharing performances. VSCO Community
-Edition is under CC0. See the repository's `THIRD_PARTY.md` for full credits.
-The portable examples work without external samples.
+The preparer downloads pinned source revisions and retains their license
+records. It selects the piano zones needed by the scores, applies onset offsets
+and retuned root mappings, and converts them to stereo 44.1 kHz float WAVs.
+For the strings it selects quiet sustain layers, normalizes them, and extends
+sustains with crossfades. It does not implement the complete source SFZ player,
+including its pedal, resonance and hammer-noise behavior.
 
-Use `--remix` only when the cached dry performance is still the performance
-you want. It skips composition and instrument rendering. A melody, tempo,
-source sound or performance change requires a source render, not a remix.
-Use `--resume` to skip an unchanged, verified build; it checks the code/score
-fingerprint, master hash and recorded asset hashes. Neither option is a
-substitute for keeping the source assets and software environment.
+The piano source is Salamander Grand Piano v3 by Alexander Holm, with mapping
+by kinwie and retuning by Markus Fiedler, under
+[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). Keep those credits,
+the license link and a description of changes with shared performances.
+VSCO Community Edition is by Sam Gossner/Versilian Studios and Simon Dalzell/Ivy
+Audio, with sample cutting by Elan Hickler/Soundemote, under CC0. Full source
+links and notices are in `THIRD_PARTY.md`.
 
-## Reproducibility without identical performances everywhere
+Sign-Off needs three separately supplied LM-2 one-shots: `kick.wav`,
+`snare-m.wav` and `hhclosed.wav` under `Samples/LM-2`. Its pitched sources are
+synthesized. The public repository contains code, not the sample libraries.
 
-A single global random generator makes edits fragile: adding one note at the
-start can change every later random choice. The rebuilt code derives a seed
-from the track title and instrument part. That localizes many edits and makes
-repeated renders comparable. Slow Rain retains the audition's specific seeds.
+## Render one track, then the record
 
-Timing variation is also structured. Map both ends of a note through the same
-performance timeline. Keep retriggered notes paired by voice ID, or use the
-sampler's documented FIFO pairing for older event tuples. Otherwise a new
-note-off can accidentally cut off the wrong overlapping note.
+```bash
+python scripts/album_v2/render.py --album quiet-hours --track 2 --asset-root /path/to/studio-assets --output-dir Tracks/albums
+```
 
-## What was checked, and what remains a listening decision
+Omit `--track 2` to render the album. The output separates decisions and sound:
 
-The September rebuild produced twelve tracks per album: about 28:19 for
-Sign-Off and 25:19 for The Quiet Hours. Delivery checks cover format, duration,
-finite audio, measured loudness and true peak, processed-stem reconstruction,
-and complete album previews. Slow Rain's preserved audition passage was also
-compared at the dry-source level.
+```text
+The Quiet Hours/
+    Sessions/02 Slow Rain/
+        score.json
+        dry/piano.wav
+        dry/strings.wav
+        stems/piano.wav
+        stems/strings.wav
+        stems/room.wav
+        mix-float.wav
+        manifest.json
+    Masters/02 Slow Rain.wav
+    Listening/02 Slow Rain.mp3
+```
 
-These checks establish that the pipeline delivered the intended files. They
-do not establish that every track is finished artistically. Listen through
-the entire sequence, including on a mono speaker, and record concrete notes:
-which transition loses momentum, which phrase repeats once too often, which
-piano register masks the melody. Then change the score or mix stage responsible
-for that problem and render only what needs changing.
+Dry buses preserve the performed sources. Processed stems preserve their
+contributions to the float mix. The manifest records the specification,
+code/score fingerprint, asset hashes, render times and delivery measurements.
+
+The piano and strings use fixed gains across the album, with the strings about
+14 dB behind the piano in the Slow Rain reference. Final delivery gain then
+brings each track toward its loudness target subject to the peak ceiling.
+It does not individually normalize every quiet note or instrument.
+
+## Reuse a stage deliberately
+
+Use `--remix` after changing only mix decisions. It reads the existing dry
+files, so it cannot apply changes to notes, timing or instrument sources.
+Use `--resume` to skip tracks whose fingerprint, master hash and recorded asset
+hashes still match. Keep a separate output folder for a comparison you want
+to preserve.
+
+The seed strategy localizes randomness by track and part. Explicit voice IDs
+keep overlapping note boundaries paired. These mechanisms support repeatability;
+recording source versions and retaining the dry files completes the comparison.
+
+## Listen at album scale
+
+Each record has twelve tracks: about 28:19 for Sign-Off and 25:19 for The Quiet
+Hours. The website's custom album players let listeners choose a track or
+continue through the sequence. Starting another album pauses the first.
+
+Check transitions and endings as well as individual songs. A technically
+valid export can still contain an overlong phrase or a tiring texture.
+The delivery checks cover format, finite audio, loudness, true peak, tails
+and float-stem reconstruction. The musical decision remains in the listening.

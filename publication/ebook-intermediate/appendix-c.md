@@ -1,6 +1,6 @@
 # Appendix C — VST3 Preset Anatomy
 
-The byte-level reference behind Chapter 3's `load_nam` — for when you
+The byte-level reference for `scripts/music_engine/plugins.py` — for when you
 need to set plugin state that isn't exposed as a parameter, and the
 save-a-preset-once workflow isn't enough because you want to swap files
 programmatically.
@@ -46,7 +46,7 @@ A marker string, then length-prefixed fields, then parameter values:
 "Length-prefixed" = a 4-byte count followed by exactly that many bytes of
 text. To swap a file: find the marker, skip fields to the one you want,
 splice in your path with a corrected length prefix, rebuild the index.
-Chapter 3's `load_nam` is the complete worked implementation.
+The `load_nam` function in `scripts/music_engine/plugins.py` contains the adapter implementation.
 
 ### JUCE plugins (a large fraction of everything else)
 
@@ -85,7 +85,7 @@ for i, (x, y) in enumerate(zip(a, b)):
 ## When not to bother
 
 If the file choice never changes at render time, skip all of this: the
-save-once workflow (Chapter 3, "the easy way") — configure in the
+saved-preset workflow described in Chapter 3 — configure in the
 editor, persist `preset_data` to disk, reload the bytes forever — is
 robust, format-agnostic, and survives plugin updates better than offset
 arithmetic. Byte surgery is for the for-loop: rendering the same

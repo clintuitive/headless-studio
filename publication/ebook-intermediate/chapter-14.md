@@ -1,71 +1,64 @@
-# Chapter 14 — AI Collaboration and an Honest Production Record
+# Chapter 14 — AI Collaboration and a Clear Production Record
 
-Python rendering and AI involvement describe different parts of a process.
-A deterministic script can play a melody written with AI assistance. Calling
-that recording “not AI” merely because its final waveform came from NumPy
-would leave out part of its authorship history.
+Python rendering and AI assistance describe different parts of making a record.
+A deterministic script can play a melody written with AI assistance. The way
+the waveform is produced does not by itself describe who contributed the notes,
+arrangement or production decisions.
 
-For the rebuilt albums, the sound engine uses synthesis and sample playback.
-No external generative-audio service or generated vocal was used. AI assistance
-did contribute code, new composition, arrangement and production decisions.
-Clint supplied the album concepts, critique and selected audition directions.
-The production record should say both things plainly.
+The Headless Studio uses synthesis and sample playback. Its albums involved
+AI assistance in code, composition, arrangement and production, with Clint
+Johnson providing concepts, direction and listening decisions. No external
+generative-audio service or generated vocal was used for these recordings.
 
-## Separate the kinds of contribution
+## Record concrete contributions
 
-A useful project note answers four different questions:
+A useful production record identifies the concept, writing, performance sources
+and mix decisions. Avoid compressing all of that into a vague label. Record
+which ideas were accepted and where they appear in the score or processing.
 
-- Who supplied the concept and musical direction?
-- How were notes, forms and arrangements written?
-- How was the audio performed or synthesized?
-- How were editing, effects and delivery carried out?
+For example, Sign-Off separates steady drum attacks from unstable pitched
+material. That direction has a visible implementation: the drums bypass the
+timing warp. The Quiet Hours uses phrase-level piano timing and selective
+string support. Those choices can be discussed, heard and edited separately.
 
-Slow Rain illustrates why one label is insufficient. Its original composition
-was retained, while the new performance and mix followed a selected audition.
-Most other tracks were reimagined. The same renderer can handle both cases,
-but their histories differ.
+Keep working notes where they help the project. The public tutorial should
+explain the resulting technique rather than depend on a transcript of how
+people arrived at it.
 
-Keep prompts and decisions where they help explain a revision. More useful
-than a claim that “AI made the album” is a concrete record: Broadcast's damage
-was preferred; its drum timing was distracting; drums were separated from the
-warp; heavily damaged tracks were balanced with gentler, more ambient pieces.
-That is an actionable account of collaboration.
+## Inspect generated work at the right level
 
-## Disclosure follows the destination's questions
+A generated score is easier to evaluate when motifs and forms are explicit.
+An audio function is easier to evaluate when its input and output units are
+clear. Review both before asking a complete album render to reveal every error.
 
-Read a distributor's current wording rather than answering from a personal
-definition of AI music. DistroKid's AI credits guidance includes AI-composed
-music and arrangements, not just directly generated audio. Its current upload
-form distinguishes music, vocals and lyrics, and says AI used only for mixing
-or mastering does not count for that question.
+Tests can catch wrong sample rates, unsigned PCM offsets, mismatched note-offs,
+clipping or incomplete output. Listening can catch a melody that goes nowhere
+or a room return that masks the lead. Neither method replaces the other.
 
-The rebuilt release drafts disclose AI involvement in the music. They do not
-claim generated vocals. This is a description of the work and the current
-form, not a rule guaranteed to remain unchanged for every distributor.
+Compare alternatives with the same performed sources and similar listening
+levels. Write specific feedback: a drum attack feels late, a chord release
+cuts short, a string entrance covers the melody. That points to a stage of
+the system that can be changed and evaluated.
 
-Reference: [DistroKid — What Are AI Credits?](https://support.distrokid.com/hc/en-us/articles/50784235803411-What-Are-AI-Credits).
+## Keep code and source permissions separate
 
-## Keep source permissions distinct from code licensing
+An open-source renderer does not relicense the samples or plugins it loads.
+Keep third-party assets outside the public repository and retain their source,
+license and preparation records locally. Carry required credits into published
+audio metadata and the listening page.
 
-Publishing a renderer under an open-source license does not grant permission
-to redistribute every sample or plugin it can load. Keep factory libraries,
-third-party drum samples and licensed instrument files outside the public
-repository. Document what a reader needs to obtain independently and retain
-the applicable license information with the local assets.
+The portable sketches and six-zone sampler demo let readers start with sounds
+generated entirely by the code. The album instruments add separately obtained
+sources with their own notices. Those are explicit dependencies, not hidden
+contents of a repository clone.
 
-The self-contained teaching sketches provide a useful alternative: readers
-can render a complete example with synthesized tones and noise before
-configuring any external library. They demonstrate the pipeline without
-pretending that a clean clone includes the album's sampled instruments.
+## Answer the destination's questions accurately
 
-## Use AI where its output can be inspected
+Use the actual production record when completing distributor or publishing
+forms. Read the destination's current questions and distinguish contributions
+to music, lyrics, vocals and production. Preserve the submitted information
+with the delivery package so it can be checked later.
 
-A generated score is easier to revise when its motifs and form are explicit.
-A generated DSP function is easier to trust when a test checks the failure it
-might introduce: wrong sample rate, unsigned PCM offset, mismatched note-offs,
-clipping, or incomplete output. Neither a confident explanation nor a passing
-render proves musical quality.
-
-Listen to the result, compare it with the intent, and keep the production
-history accurate. That makes both the record and its teaching material easier
-to understand and improve.
+A clear account of the work makes both the record and its teaching material
+easier to understand. It also keeps an explanation of the renderer from
+accidentally making a broader claim about authorship.

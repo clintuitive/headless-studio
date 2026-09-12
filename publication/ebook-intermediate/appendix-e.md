@@ -1,78 +1,45 @@
-# Appendix E — Free Resources
+# Appendix E — Sources and Further Reading
 
-Everything this book's records were built with that you can download
-today for nothing. URLs current as of publication; the names are stable
-enough to search if a link drifts.
+The repository is the runnable companion to this book:
+[clintuitive/headless-studio](https://github.com/clintuitive/headless-studio).
+Its code license does not replace the licenses of separately installed
+software or source recordings.
 
-## Sound sources
+## Start without external instruments
 
-- **GeneralUser GS** — the General MIDI soundfont behind Chapter 2.
-  Free, ~30 MB, all 128 programs at consistent levels.
-  → schristiancollins.com/generaluser.php
-- **FluidR3 GM** — the soundfont Ubuntu ships as the
-  `fluid-soundfont-gm` package; a fine alternative.
-- **TimGM6mb** — a tiny (6 MB) GM soundfont, handy for tests and CI; it
-  ships *inside* the `pretty_midi` pip package, which makes it the most
-  reliably downloadable soundfont in existence:
-  ```python
-  import pretty_midi, os, shutil
-  shutil.copy(os.path.join(os.path.dirname(pretty_midi.__file__),
-                           "TimGM6mb.sf2"), "TimGM6mb.sf2")
-  ```
+- `scripts/generate_portable_samples.py` creates Afterimage, Open Window and
+  Night Transit from synthesized tones and noise.
+- `scripts/generate_sampler_demo.py` creates six sample zones, a JSON manifest,
+  provenance information and a short performance.
+- `scripts/tests/` and `.github/workflows/core.yml` define the core checks.
 
-## Amps and effects
+## Album sources
 
-- **Neural Amp Modeler (plugin)** — the free VST3/AU that plays `.nam`
-  amp captures. → neuralampmodeler.com
-- **Tone Hunt** — the community library of thousands of free `.nam`
-  captures; the AC15, Twin, and dUg bass preamp on this book's records
-  all came from community captures. → tonehunt.org
-- **Voxengo free impulse responses** — the measured rooms behind
-  Chapter 11, including the drum room on the darkwave record.
-  → voxengo.com (Impulse Modeler / free IR pack)
-- **OpenAIR** — academic library of measured spaces (churches,
-  concert halls) under permissive licenses; the featured-space IRs.
+- [Salamander Grand Piano](https://github.com/sfzinstruments/SalamanderGrandPiano):
+  recordings by Alexander Holm, mapping by kinwie and retuning by Markus
+  Fiedler, under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+- [VSCO Community Edition](https://github.com/sgossner/VSCO-2-CE): recordings by
+  Sam Gossner/Versilian Studios and Simon Dalzell/Ivy Audio, sample cutting by
+  Elan Hickler/Soundemote, under CC0.
+- `scripts/prepare_open_instruments.py` defines the selected source revisions
+  and preparation steps; `THIRD_PARTY.md` records credits and dependency scope.
 
-## Drum machines
+## Optional audio tools
 
-- **smpldsnds/drum-machines** — one-shots from dozens of hardware boxes;
-  all eight machines in Chapter 6 (LinnDrum LM-2, Drumtraks, TR-808,
-  CR-8000, RZ-1, MFB-512, MR10, SK-1) came from here.
-  → github.com/smpldsnds/drum-machines
+- [FluidSynth](https://www.fluidsynth.org/) and
+  [pyfluidsynth](https://github.com/nwhitehead/pyfluidsynth) provide a SoundFont
+  rendering path. The native library, binding and SoundFont are separate inputs.
+- [Pedalboard](https://github.com/spotify/pedalboard) supplies the optional
+  plugin host. Consult its documentation for supported formats and runtime
+  behavior, and each plugin's documentation for its own requirements.
+- [FFmpeg](https://ffmpeg.org/documentation.html) provides encoding and audio
+  measurement tools used by the delivery stage.
+- [NumPy](https://numpy.org/doc/) and [SciPy](https://docs.scipy.org/doc/scipy/)
+  document the arrays, filters, resampling and convolution used throughout.
 
-## Python libraries
+## Publication and listening
 
-| library | role in the book |
-|---|---|
-| `pedalboard` | plugin hosting + built-in effects (Spotify, ch. 3–4, 10–11) |
-| `pyfluidsynth` | the FluidSynth binding (ch. 2) |
-| `numpy` | audio *is* NumPy arrays, everywhere |
-| `scipy` | WAV I/O, filters, `sawtooth` (ch. 5–7) |
-| `mido` | MIDI messages for instrument plugins (ch. 3–4) |
-| `mutagen` | release metadata tagging (ch. 15) |
-| `pretty_midi` | mostly for the soundfont in its pocket (tests) |
-
-## Instruments already on your Mac
-
-- **The generated sampler instrument** — run `scripts/generate_sampler_demo.py`.
-  Chapter 5 builds the sources and Appendix B describes their JSON map.
-- **Salamander Grand Piano v3** — Alexander Holm's CC BY 3.0 recordings.
-  → https://github.com/sfzinstruments/SalamanderGrandPiano
-- **VSCO 2 Community Edition** — CC0 orchestral recordings.
-  → https://github.com/sgossner/VSCO-2-CE
-- **Ample Bass P Lite II** — the free deep-sampled P-bass rescued in
-  Chapter 4. → amplesound.net (free line)
-
-## The companion code
-
-The complete working pipeline — every loader, the band scripts, the
-album engine, the audition harnesses, the stems exporter with its null
-test, and reproducible teaching examples — is free
-and open on GitHub, MIT-licensed:
-**github.com/clintuitive/headless-studio**. Code only: the sound sources
-above are downloads, not redistributables, which is why this appendix
-exists.
-
-If a link here has rotted: the search terms in bold survive, and the
-book's errata page lives at the blog —
-**clintjohnson.cloud/headless-studio**.
+The [Headless Studio site](https://clintjohnson.cloud/headless-studio/) hosts
+the articles, HTML book, EPUB and album players. The website recordings are
+separate from the public code checkout. Preserve instrument attribution when
+sharing performances that use the credited sources.

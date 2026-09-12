@@ -1,56 +1,63 @@
 ---
-title: Rebuilding Sign-Off and The Quiet Hours
+title: Two Albums from One Python Studio
 date: 2026-09-12
 slug: rebuilding-the-albums
-description: Twenty-four new masters, a steadier broadcast rhythm, more space, and a studio that is easier to revise.
+description: Distinct writing, source preparation, performed buses, and two albums with different musical identities.
 ---
 
-The first versions proved that Python could render an album. Revisiting them
-showed what the code could not decide for us: when a phrase had been repeated
-too often, when a mix obscured the writing, and when a shared template had
-made different tracks feel alike.
+Sign-Off and The Quiet Hours share a renderer architecture, but their musical
+roles are different. Sign-Off is a worn late-night broadcast. The Quiet Hours
+is piano-led night music with selective string support. The studio preserves
+those decisions as scores, performed audio, mix stems and delivery records.
 
-The rebuilt **Sign-Off** follows a more deliberate vaporwave direction.
-Pitched sources drift and wear, while drum attacks keep their footing.
-Rabbit Ears and Vertical Hold carry the strongest signal damage; the sequence
-also leaves room for softer, more ambient and dreamy pieces. The album needs
-contrast as much as it needs a recognizable palette.
+## Write the identity into the score
 
-**The Quiet Hours** keeps Slow Rain's composition and the selected new
-performance treatment. The other eleven pieces have new themes and forms.
-The sampled piano retains stereo information, with strings used selectively.
+Sign-Off varies its chord banks, motifs, section lengths and production settings.
+Rabbit Ears and Vertical Hold carry the strongest warble; other tracks leave
+room for softer, more ambient textures. Its drums stay on a steady final-tempo
+grid while pitched material passes through slowdown and tape movement.
 
-[Listen to the albums](/music.html). The website edition of The Quiet Hours
-now uses Salamander Grand Piano and VSCO Community Edition strings, with
-its composition and event timing preserved. Instrument credits and license
-links are on the listening page.
+The Quiet Hours varies piano patterns, register, meter and phrase length.
+A smooth performance timeline maps both ends of a note, and voice IDs keep
+same-pitch overlaps paired. The piano stays in front of the strings rather
+than competing with an equally loud accompaniment in every passage.
 
-## What changed in the studio
+## Prepare sources with records attached
 
-The sampler now respects source sample rates, centers unsigned 8-bit PCM,
-and pairs overlapping notes correctly. It can preserve stereo instead of
-collapsing every instrument to mono. The plugin loader is lazy, so ordinary
-sample rendering does not require a plugin host.
+The piano is Salamander Grand Piano and the strings are VSCO Community Edition.
+The preparation script downloads pinned sources, retains licenses, and builds
+the zone maps used by the renderer. It adjusts piano onsets and root tuning,
+and extends selected string sustains with crossfades. Source and attribution
+details appear on the [listening page](/music.html).
 
-Each album session saves the score, dry performance, processed stems, float
-mix and delivery measurements. A mix-only revision reuses the dry sources.
-Code, score and asset hashes help identify whether an existing render can be
-reused. The exact source that generated these masters is archived with the
-local delivery package.
+Sign-Off uses synthesized pitched sources and three separately supplied LM-2
+drum samples. The public repository includes the code and source requirements,
+not copies of the studio's installed plugins or sample libraries.
 
-The processed stems reconstruct the float mix. That claim has a precise
-boundary: a nonlinear shared music bus stays a group stem, and final PCM
-dither is applied once to the distribution master. Independently processed
-dry instruments are not promised to reconstruct a nonlinear bus.
+## Save a boundary before each expensive change
 
-## A smaller first step
+Each session contains score data, dry performed buses, processed stems, a float
+mix and a manifest. A room-balance change can reuse dry audio. A note, tempo or
+instrument change needs another source render. Code and asset hashes help
+identify which existing track renders still match their inputs.
 
-A clean checkout now has three self-contained sketches: **Afterimage**,
-**Open Window**, and **Night Transit**. They use synthesized tones and noise,
-require no sample library, and show the same source-cache and stem workflow.
-They are teaching examples rather than excerpts from the albums.
+Processed float stems reconstruct the float mix. A nonlinear shared music bus
+remains a group stem; independently processing each input is a different mix.
+Final delivery applies the selected gain and exports PCM WAV and MP3, which
+are measured after encoding.
 
-The [GitHub repository](https://github.com/clintuitive/headless-studio) contains
-the code, and the [intermediate book](/book.html) now covers the rebuild,
-corrects earlier loudness and convolution explanations, and describes AI's
-contribution to writing and arrangement separately from Python audio rendering.
+## Listen as a record
+
+The [album players](/music.html) show the artwork and complete track lists.
+Choose a song or play through the sequence. Each player advances to the next
+track and stops at the end; starting other audio pauses the current player.
+
+Technical checks establish that the expected files were produced. Listen to
+transitions, density, phrase repetition and endings to decide whether the
+sequence works. The [album chapter](/book/chapter-13.html) explains the choices
+in more detail, and the [repository](https://github.com/clintuitive/headless-studio)
+contains the runnable scores and renderer.
+
+To explore the system without external assets, start with Afterimage, Open
+Window or Night Transit. These compact sketches demonstrate the same stages
+using synthesized tones and noise.

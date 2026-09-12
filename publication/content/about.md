@@ -10,7 +10,7 @@ rooms — driven from Python scripts, with scores, source assets and render
 settings recorded so the work can be revised and reproduced.
 
 Everything published here is extracted from a working pipeline that has
-produced [complete albums](/music.html). The September 2026 rebuilds are
+produced [complete albums](/music.html). Sign-Off and The Quiet Hours are
 available in full on this site.
 
 ## The book

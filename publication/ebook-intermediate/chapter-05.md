@@ -140,7 +140,7 @@ sampler. It is not a time-stretching instrument.
 ## Render a note
 
 The shared engine exposes `ZoneSampler`. This is the same implementation that
-older scripts call `ExsSampler`; that historical name remains for compatibility.
+`ExsSampler` is an equivalent alias used by the album renderer.
 The engine reads the JSON manifest and WAVs. It loads the source recordings described by the manifest.
 
 ```python

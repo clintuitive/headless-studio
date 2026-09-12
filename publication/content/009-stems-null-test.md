@@ -2,19 +2,15 @@
 title: "Stems That Sum to the Mix — and What the Null Test Proves"
 date: 2026-07-07
 slug: stems-null-test
-description: "Revised September 2026: float-stem reconstruction, nonlinear buses, delivery dither, and the limits of a null test."
+description: Float-stem reconstruction, nonlinear buses, delivery dither, and the limits of a null test.
 ---
-
-**Updated September 12, 2026.** The earlier article overstated exact
-reconstruction after integer export. This revision uses the precise contract
-from the [updated book](/book/chapter-12.html).
 
 A rendered performance is still only a performance. A mix decides what the
 listener follows, how close it feels, and what gets out of the way. In a Python
 studio those decisions appear as gains, filters, envelopes and effects, but
 the job is the same as moving faders: listen, change one relationship, compare.
 
-The rebuilt albums use separate stages: score, dry performance, mix, and
+The albums use separate stages: score, dry performance, mix, and
 delivery. Saving the boundary between stages makes revision much faster. A
 piano balance change should not require playing every sampled note again.
 
@@ -36,11 +32,10 @@ mix = sum(stems.values())
 
 These gains describe the last balance stage, not the whole mix. The choice of
 sample, velocity, note length, filter and room send already shaped the sound.
-For *The Quiet Hours*, the approved Slow Rain audition established a fixed
-piano/string calibration. Applying that calibration across the record avoids
-normalizing every quiet gesture into an equally loud one. The renderer stores
-fixed gain values as constants. The website instrument revision recalibrates
-those gains for the new piano and strings while keeping the piano forward.
+For *The Quiet Hours*, fixed gains keep the strings behind the piano across
+the record. In the Slow Rain reference the strings sit about 14 dB below the
+piano by whole-track RMS. The gains are explicit constants in the renderer;
+final delivery gain scales the combined mix without normalizing each gesture.
 
 *Sign-Off* needs a different routing decision. Its pitched instruments pass
 through the damaged broadcast treatment together. The drums bypass the timing
@@ -61,7 +56,7 @@ LUFS describes a whole program. Sample peak is the largest stored sample;
 true peak estimates the reconstructed waveform between samples. A file can
 have acceptable sample peaks and still produce higher peaks after conversion.
 
-The rebuilt records use project targets of −22 LUFS, with selected interludes
+The records use project targets of −22 LUFS, with selected interludes
 and closers at −23 LUFS, and a −1.2 dBTP ceiling. These are artistic choices
 for these recordings, not universal streaming requirements. The exporter
 measures the float mix with FFmpeg, then chooses one linear gain:
@@ -95,7 +90,7 @@ too early in the musical phrase.
 
 ## The exact stem contract
 
-The rebuilt sessions contain three useful layers:
+The sessions contain three useful layers:
 
 - Dry buses preserve the rendered performance before the mix effects.
 - Processed float stems reconstruct the saved float mix.
@@ -141,3 +136,5 @@ the routing, and expect to recreate the mix effects.
 
 The practical result is a mix you can revisit. A failed null check points to
 an export or routing problem. A boring chorus points back to the song.
+
+Read the [mixing chapter](/book/chapter-12.html) alongside the runnable renderer.

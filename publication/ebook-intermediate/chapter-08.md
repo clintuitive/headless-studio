@@ -1,7 +1,7 @@
 # Chapter 8 — The Song Is a Data Structure
 
-Part I built six instrument loaders behind one shared interface. Part II
-is about the band that plays them, and it starts where songs start:
+The instrument chapters describe several ways to render a note. This chapter
+brings those sounds into an arrangement, starting with
 structure. The claim of this chapter is that a song's *arrangement* — who
 plays when, what patterns they play, how the sections stack up — is best
 written not as code that *does* things but as **data that means things**:
@@ -148,12 +148,10 @@ sections = ["intro", "A", "A2", "breath", "B", "A3",
             "breath", "B2", "A4", "outro"]
 ```
 
-This was the original template. Reusing the whole skeleton across twelve
-pieces contributed to the repetition found in the album review. A shared
-vocabulary can be useful, but each track needs a reason for its sequence,
-length and density. The rebuilt scores keep individual forms and themes;
-Chapter 13 describes the difference between reusing an engine and repeating
-a song. Treat this template as an example to depart from.
+A shared vocabulary can be useful, but each track needs a reason for its
+sequence, length and density. The album scores keep individual forms and
+themes. Chapter 13 develops this distinction between reusing an engine and
+repeating a song. Treat this template as an example to depart from.
 
 ## Practical notes
 
@@ -172,7 +170,6 @@ a song. Treat this template as an example to depart from.
   being a constant and becomes a lookup from bar number to seconds — and
   all event starts, note ends and duration calculations must use that mapping.
 
-The arrangement now specifies everything — and if you render it as
-written, it sounds programmed, because every note lands *exactly* where
-the data says. The next chapter is about ruining that perfection.
-Carefully. By a few milliseconds at a time.
+The arrangement specifies the musical positions. Chapter 9 turns them into
+performed note boundaries, keeping related gestures together and deciding
+which parts should provide a stable rhythmic reference.

@@ -1,92 +1,100 @@
-# Chapter 15 — Delivery, Replacement Releases, and Publishing the Work
+# Chapter 15 — Delivery, Publication and Reproducible Files
 
-Delivery begins with an identified recording. A filename alone is not enough:
-`02 Slow Rain.wav` can refer to several performances and mixes. Keep the audio
-hash, render manifest and source snapshot with the delivery folder so that
-“the version we uploaded” has one unambiguous meaning.
+A delivery package connects a finished mix with the files that reach listeners.
+It should be possible to identify a recording without relying on a filename
+such as `final-final.wav`. Keep its format, duration, source identity and hash
+alongside the track list and credits.
 
-## Prepare a reviewable package
+## Assemble the release folder
 
-The rebuilt albums use stereo 44.1 kHz, 24-bit PCM WAV masters. Each album
-folder also contains the original cover artwork, a numbered track list,
-listening MP3s, a complete album preview, and a release manifest. The original
-metadata is preserved separately as a historical reference; its old audio
-measurements do not describe the replacement recordings.
+The album renderer writes numbered 24-bit stereo WAV masters at 44.1 kHz,
+listening MP3s and session manifests. Keep the artwork and track metadata in
+the release folder too. Preserve comparison renders in separate directories
+so a later experiment cannot overwrite a selected master.
 
-Before uploading, verify the actual exported files. Check format and duration,
-measure loudness and true peak, reject nonfinite or silent audio, and make sure
-every track and the complete preview reaches the intended ending. The package
-builder checks preview duration against the sum of the masters. This catches
-an incomplete concatenation even if an encoder exits without an obvious error.
+A manifest records each file's identity. A SHA-256 digest changes if the bytes
+change; it does not tell you whether the music sounds better. Use it to compare
+a local export with a copied or published file.
 
-Keep technical verification separate from listening approval. A hash proves
-identity. A null test checks reconstruction. Neither proves that a fade feels
-right or that the album has enough contrast.
+```python
+from pathlib import Path
+import hashlib
 
-## New recordings are not minor file corrections
+path = Path('Tracks/albums/The Quiet Hours/Masters/02 Slow Rain.wav')
+digest = hashlib.sha256(path.read_bytes()).hexdigest()
+print(path.name, digest)
+```
 
-DistroKid offers an Audio Swap feature for eligible changes, but its policy
-excludes new recordings, remixes, restructured tracks and new production.
-These rebuilt albums fall outside that scope. Buying access to the feature
-would not change their eligibility.
+For larger files, compute the digest in chunks instead of holding the complete
+file in memory. Record hashes after the final metadata and encoding steps,
+since those can also change the file's bytes.
 
-The replacement workflow therefore uses new releases with the same album
-and track titles and original artwork. Treat rewritten or newly recorded
-tracks as new recordings when assigning identifiers; do not reuse an old ISRC
-merely to suggest continuity. Check the distributor's current rules at the
-point of delivery.
+## Check the actual delivery files
 
-Reference: [DistroKid — Audio Swap](https://support.distrokid.com/hc/en-us/articles/39612177702163-Audio-Swap-Replace-Your-Audio-Without-Losing-Anything).
+Measure the encoded WAV and MP3 rather than inferring their behavior from the
+working float mix. Lossy encoding can change peaks. Confirm channel count,
+sample rate, duration, finite samples, expected opening and closing tails,
+and the presence of every numbered track.
 
-## Match metadata deliberately
+The project's mastering targets are −22 LUFS for core tracks and −23 for
+selected quieter pieces, with a −1.2 dBTP ceiling taking priority. These are
+choices for the records, not universal requirements for a streaming service.
+Chapter 12 explains the gain-only calculation and the float-stem null test.
 
-Review the artist association, spelling, track order, genre, language, artwork,
-credits, instrumental status, AI disclosure and destination stores. Embedded
-WAV tags do not automatically populate every distributor field. Inspect the
-upload form itself.
+Listen through complete songs and transitions after the technical checks.
+Keep that judgment separate from a report that the files passed measurement.
 
-For these albums, the original account records list Clintuitive and 21 stores.
-The replacement submissions follow that selection and retain the original titles
-and artwork. Optional paid extras are separate choices; a new upload form's
-defaults are not evidence that an extra was used on the original release.
+## Carry the metadata and credits
 
-The website edition of The Quiet Hours uses Salamander Grand Piano and
-VSCO Community Edition strings. The [music page](https://clintjohnson.cloud/headless-studio/music.html)
-provides the recordings and instrument credits.
+Keep artist, album title, track titles, order, artwork and source credits in a
+readable record. Embedded WAV or MP3 tags do not guarantee that a distributor's
+form will populate the same fields. Inspect the submitted information directly.
 
-## Retire the old editions in a controlled sequence
+The Quiet Hours' listening MP3s carry instrument attribution in their comment
+metadata. The music page and downloadable credits also identify Salamander
+Grand Piano and VSCO Community Edition, their creators, source links, licenses
+and preparation changes. Retain that information when copying the recordings.
 
-The intended result is one current edition of each album, without confusing
-old duplicates. Where the distributor permits it, submit the replacement
-before retiring the old edition. In this case, DistroKid rejected same-title
-submissions until the originals were deleted. The finished masters and
-metadata were prepared first, then the original takedowns were confirmed.
-Fresh upload forms cleared the stale duplicate warnings in the earlier tabs,
-and both replacements were accepted. This order can create a temporary gap
-in store availability. Distribution and removal are separate processes; do
-not claim an old edition is gone from a store just because a request was sent.
+Treat distributor delivery as a separate action from website publishing.
+Consult the destination's current requirements for formats, metadata,
+identifiers and replacement recordings. Keep any submission records with the
+release package; the website's players are not evidence of store availability.
 
-Keep a small status record with original release IDs, new release IDs when
-assigned, submission state, takedown state and verified store links. Publishing
-new previews on your own site does not mean the replacements are already on
-Spotify. Label those two states clearly for listeners.
+## Build the publication from one manuscript
 
-## Publish the code, book and listening page together
+The repository's `publication/` directory contains the article Markdown, book
+chapters, styles, player code and build scripts. Build the EPUB first, then
+build HTML from the same sources:
 
-The public repository contains the renderer and the maintained intermediate
-manuscript. Exclude private samples, account configuration, credentials and
-multi-gigabyte sessions. Provide a short example that runs with the minimal
-dependencies, then document the additional assets required by the albums.
+```bash
+python -m pip install -r publication/requirements.txt
+python publication/build_epub.py
+python publication/build.py
+```
 
-Build the website and EPUB from the same Markdown chapters. Validate links,
-chapter order and the EPUB package, then inspect the rendered pages. Building
-should write a local artifact; deploying should be an explicit separate step.
-A backup of the previous site makes a publishing mistake recoverable.
+The EPUB builder packages the chapters and checks its internal links. The HTML
+builder produces the article pages, book reader, complete book page and music
+page. A code-only checkout has no album audio: a full website bundle also needs
+the separately hosted media under `publication/downloads/`.
 
-The listening page offers the recordings directly. Verify streaming links
-before publishing them. Clear version labels save a listener from comparing an
-old stream with a new production description and wondering why they disagree.
+The music page has a custom player for each album. Each uses one audio element,
+a track list, transport controls and a seek slider. Playback advances through
+the track list and stops after the last track. A document-level play handler
+pauses other audio, including the standalone sketches. Without JavaScript,
+the track links still lead directly to the MP3s.
 
-A headless studio is most useful when it leaves an understandable trail:
-a score you can revise, a performance you can reuse, a mix you can reconstruct,
-and a delivery package whose identity you can prove.
+## Verify a publication before and after deployment
+
+Validate local links, expected chapter order, player track counts and referenced
+media before publishing. Generate a file manifest and compare its hashes with
+the staged bundle. Keep a private backup and switch the complete directory into
+place only after those checks pass.
+
+After deployment, check the public HTML, EPUB, scripts and styles against the
+local build. Exercise the player in a browser: select tracks, seek, change
+albums and reach the end of a sequence. Check a narrow viewport and keyboard
+controls. Version changed asset URLs when caches could otherwise retain an
+incompatible stylesheet or script.
+
+The result is a record and a publication that can be inspected at each stage:
+score, performance, mix, delivery and the actual files listeners receive.

@@ -1,7 +1,7 @@
 ---
 title: Music
 slug: music
-description: Listen to the rebuilt Sign-Off and The Quiet Hours, plus self-contained Python studio sketches.
+description: Listen to Sign-Off and The Quiet Hours, plus self-contained Python studio sketches.
 ---
 
 Music by Clintuitive. These recordings use Python synthesis and sample
@@ -68,7 +68,7 @@ The quiet sustain layers were normalized and extended with crossfades.
 
 ## Self-contained studio sketches
 
-These new examples run from a clean GitHub checkout using NumPy and SciPy.
+These examples run from a clean GitHub checkout using NumPy and SciPy.
 They demonstrate distinct arrangements and cached mix revisions without
 external samples or plugins. FFmpeg adds the WAV/MP3 delivery exports.
 
@@ -84,7 +84,7 @@ Find streaming links as they become available on the release pages: [Sign-Off](h
 and [The Quiet Hours](https://distrokid.com/hyperfollow/clintuitive/the-quiet-hours-3).
 You can listen to both albums in full on this page.
 
-Read [what changed](/rebuilding-the-albums.html), explore the [free book](/book.html),
+Read [how the albums are made](/rebuilding-the-albums.html), explore the [free book](/book.html),
 or get the [source code](https://github.com/clintuitive/headless-studio).
 
 <script src="/static/album-player.js?v=1" defer></script>
