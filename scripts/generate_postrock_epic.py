@@ -63,9 +63,8 @@ CLEAN_GUITAR, OVERDRIVE_GUITAR, WARM_PAD, STRINGS = 27, 29, 89, 48
 KICK, SNARE, STICK, T_LOW, T_FLR, T_MID, T_HI = 36, 38, 37, 43, 43, 47, 48
 RIDE, BELL, CRASH, CRASH2, HH_PEDAL = 51, 53, 49, 57, 44
 
-# Brooklyn Drum Kit Designer kit, extracted from the GarageBand/Logic
-# factory library by exs_extract.py: 1705 zones of real multi-velocity
-# studio recordings, keyed by MIDI note with velocity-layer ranges.
+# Historical local drum manifest; not included or cleared for reuse here.
+# This script preserves the original session paths, not an asset acquisition guide.
 BROOKLYN_DIR = os.path.join(SCRIPT_DIR, "..", "Samples", "Brooklyn")
 
 # E minor, chords change every 2 bars: Em - C - G - D.

@@ -39,8 +39,8 @@ sample, velocity, note length, filter and room send already shaped the sound.
 For *The Quiet Hours*, the approved Slow Rain audition established a fixed
 piano/string calibration. Applying that calibration across the record avoids
 normalizing every quiet gesture into an equally loud one. The renderer stores
-the measured reference values as constants; it does not require private
-comparison files to reproduce them.
+fixed gain values as constants. The website instrument revision recalibrates
+those gains for the new piano and strings while keeping the piano forward.
 
 *Sign-Off* needs a different routing decision. Its pitched instruments pass
 through the damaged broadcast treatment together. The drums bypass the timing

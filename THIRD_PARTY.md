@@ -16,15 +16,22 @@ packaging a plugin-enabled application. Other dependencies and separately
 installed plugins likewise retain their own licenses. A free download is not
 permission to redistribute a plugin, its factory library, or its presets.
 
-## Samples and EXS files
+## Sample sources
 
-Use your own recordings or obtain explicit permission for the intended use.
-Apple's [GarageBand license](https://www.apple.com/legal/sla/docs/GarageBand.pdf),
-sections 2G and 2I, distinguishes original soundtrack use from standalone
-extraction, use outside the intended software context, redistribution and
-reverse engineering. The EXS parser demonstrates file-format handling; it does
-not establish permission to extract Apple's factory library. The applicable
-license version and any legal exceptions must be assessed separately.
+The teaching instrument is synthesized entirely by `generate_sampler_demo.py`.
+For the website revision of The Quiet Hours, the piano source is
+[Salamander Grand Piano v3](https://github.com/sfzinstruments/SalamanderGrandPiano)
+by Alexander Holm, with the mapping by kinwie and retuning by Markus Fiedler,
+under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). The recordings
+are decoded, onset-adjusted, pitch-mapped and mixed in new performances.
+Retain attribution and the license link when sharing those performances.
+
+The strings use [VSCO 2 Community Edition](https://github.com/sgossner/VSCO-2-CE)
+by Versilian Studios/Sam Gossner and Ivy Audio/Simon Dalzell, with sample cutting
+by Elan Hickler/Soundemote, under CC0 1.0. Quiet sustain layers are normalized
+and extended with crossfades for the new arrangements. Both source license
+files and pinned revisions are retained with the local prepared instruments.
+No sample binaries are bundled in this code repository.
 
 The same rule applies to drum-machine sample collections, soundfonts, impulse
 responses and amp models: verify their actual terms. Merely finding a library
@@ -32,7 +39,7 @@ on GitHub does not establish rights to its underlying recordings.
 
 ## Publication assets
 
-The six included images are a book cover and explanatory plots. Album audio
+The five included images are a book cover and explanatory plots. Album audio
 and downloadable books are hosted separately and are not Git attachments.
 This notice does not certify authorship of every image or clear the separate
 website recordings. Keep source and permission records for contributed art,

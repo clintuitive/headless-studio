@@ -41,33 +41,49 @@ An imperfect late-night broadcast: steady drum attacks, worn pitched sources, an
 
 ## The Quiet Hours
 
-Piano-led night music. Slow Rain retains its composition with the selected new performance and mix; eleven other pieces have new writing and forms.
+Piano-led night music. This listening edition pairs Salamander grand piano with
+VSCO chamber strings, preserving the compositions and timing of the recent
+rebuild, including Slow Rain.
 
-<img src="/downloads/rebuilt-2026/the-quiet-hours/cover.png" alt="The Quiet Hours original album artwork" width="300" height="300" loading="lazy">
+<span id="quiet-hours-listen"></span>
 
-<div class="listening-track"><h3>01 First Light</h3><audio controls preload="none" aria-label="01 First Light"><source src="/downloads/rebuilt-2026/the-quiet-hours/01%20First%20Light.mp3" type="audio/mpeg"></audio></div>
+<img src="/downloads/open-instruments-2026/the-quiet-hours/cover.png" alt="The Quiet Hours original album artwork" width="300" height="300" loading="lazy">
 
-<div class="listening-track"><h3>02 Slow Rain</h3><audio controls preload="none" aria-label="02 Slow Rain"><source src="/downloads/rebuilt-2026/the-quiet-hours/02%20Slow%20Rain.mp3" type="audio/mpeg"></audio></div>
+<div class="listening-track"><h3>01 First Light</h3><audio controls preload="none" aria-label="01 First Light"><source src="/downloads/open-instruments-2026/the-quiet-hours/01%20First%20Light.mp3" type="audio/mpeg"></audio></div>
 
-<div class="listening-track"><h3>03 Window Seat</h3><audio controls preload="none" aria-label="03 Window Seat"><source src="/downloads/rebuilt-2026/the-quiet-hours/03%20Window%20Seat.mp3" type="audio/mpeg"></audio></div>
+<div class="listening-track"><h3>02 Slow Rain</h3><audio controls preload="none" aria-label="02 Slow Rain"><source src="/downloads/open-instruments-2026/the-quiet-hours/02%20Slow%20Rain.mp3" type="audio/mpeg"></audio></div>
 
-<div class="listening-track"><h3>04 Mile Markers</h3><audio controls preload="none" aria-label="04 Mile Markers"><source src="/downloads/rebuilt-2026/the-quiet-hours/04%20Mile%20Markers.mp3" type="audio/mpeg"></audio></div>
+<div class="listening-track"><h3>03 Window Seat</h3><audio controls preload="none" aria-label="03 Window Seat"><source src="/downloads/open-instruments-2026/the-quiet-hours/03%20Window%20Seat.mp3" type="audio/mpeg"></audio></div>
 
-<div class="listening-track"><h3>05 Paper Boats</h3><audio controls preload="none" aria-label="05 Paper Boats"><source src="/downloads/rebuilt-2026/the-quiet-hours/05%20Paper%20Boats.mp3" type="audio/mpeg"></audio></div>
+<div class="listening-track"><h3>04 Mile Markers</h3><audio controls preload="none" aria-label="04 Mile Markers"><source src="/downloads/open-instruments-2026/the-quiet-hours/04%20Mile%20Markers.mp3" type="audio/mpeg"></audio></div>
 
-<div class="listening-track"><h3>06 The Small Hours</h3><audio controls preload="none" aria-label="06 The Small Hours"><source src="/downloads/rebuilt-2026/the-quiet-hours/06%20The%20Small%20Hours.mp3" type="audio/mpeg"></audio></div>
+<div class="listening-track"><h3>05 Paper Boats</h3><audio controls preload="none" aria-label="05 Paper Boats"><source src="/downloads/open-instruments-2026/the-quiet-hours/05%20Paper%20Boats.mp3" type="audio/mpeg"></audio></div>
 
-<div class="listening-track"><h3>07 Northbound</h3><audio controls preload="none" aria-label="07 Northbound"><source src="/downloads/rebuilt-2026/the-quiet-hours/07%20Northbound.mp3" type="audio/mpeg"></audio></div>
+<div class="listening-track"><h3>06 The Small Hours</h3><audio controls preload="none" aria-label="06 The Small Hours"><source src="/downloads/open-instruments-2026/the-quiet-hours/06%20The%20Small%20Hours.mp3" type="audio/mpeg"></audio></div>
 
-<div class="listening-track"><h3>08 Marginalia</h3><audio controls preload="none" aria-label="08 Marginalia"><source src="/downloads/rebuilt-2026/the-quiet-hours/08%20Marginalia.mp3" type="audio/mpeg"></audio></div>
+<div class="listening-track"><h3>07 Northbound</h3><audio controls preload="none" aria-label="07 Northbound"><source src="/downloads/open-instruments-2026/the-quiet-hours/07%20Northbound.mp3" type="audio/mpeg"></audio></div>
 
-<div class="listening-track"><h3>09 The Long Way Home</h3><audio controls preload="none" aria-label="09 The Long Way Home"><source src="/downloads/rebuilt-2026/the-quiet-hours/09%20The%20Long%20Way%20Home.mp3" type="audio/mpeg"></audio></div>
+<div class="listening-track"><h3>08 Marginalia</h3><audio controls preload="none" aria-label="08 Marginalia"><source src="/downloads/open-instruments-2026/the-quiet-hours/08%20Marginalia.mp3" type="audio/mpeg"></audio></div>
 
-<div class="listening-track"><h3>10 Inland Sea</h3><audio controls preload="none" aria-label="10 Inland Sea"><source src="/downloads/rebuilt-2026/the-quiet-hours/10%20Inland%20Sea.mp3" type="audio/mpeg"></audio></div>
+<div class="listening-track"><h3>09 The Long Way Home</h3><audio controls preload="none" aria-label="09 The Long Way Home"><source src="/downloads/open-instruments-2026/the-quiet-hours/09%20The%20Long%20Way%20Home.mp3" type="audio/mpeg"></audio></div>
 
-<div class="listening-track"><h3>11 Evening Glass</h3><audio controls preload="none" aria-label="11 Evening Glass"><source src="/downloads/rebuilt-2026/the-quiet-hours/11%20Evening%20Glass.mp3" type="audio/mpeg"></audio></div>
+<div class="listening-track"><h3>10 Inland Sea</h3><audio controls preload="none" aria-label="10 Inland Sea"><source src="/downloads/open-instruments-2026/the-quiet-hours/10%20Inland%20Sea.mp3" type="audio/mpeg"></audio></div>
 
-<div class="listening-track"><h3>12 Last Page</h3><audio controls preload="none" aria-label="12 Last Page"><source src="/downloads/rebuilt-2026/the-quiet-hours/12%20Last%20Page.mp3" type="audio/mpeg"></audio></div>
+<div class="listening-track"><h3>11 Evening Glass</h3><audio controls preload="none" aria-label="11 Evening Glass"><source src="/downloads/open-instruments-2026/the-quiet-hours/11%20Evening%20Glass.mp3" type="audio/mpeg"></audio></div>
+
+<div class="listening-track"><h3>12 Last Page</h3><audio controls preload="none" aria-label="12 Last Page"><source src="/downloads/open-instruments-2026/the-quiet-hours/12%20Last%20Page.mp3" type="audio/mpeg"></audio></div>
+
+### Instrument credits
+
+Piano: [Salamander Grand Piano v3](https://github.com/sfzinstruments/SalamanderGrandPiano)
+by Alexander Holm, with mapping by kinwie and retuning by Markus Fiedler,
+under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+The samples were onset-adjusted, retuned and performed for these recordings.
+Strings: [VSCO 2 Community Edition](https://github.com/sgossner/VSCO-2-CE),
+by Sam Gossner/Versilian Studios and Simon Dalzell/Ivy Audio, with sample cutting
+by Elan Hickler/Soundemote, under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
+The quiet sustain layers were normalized and extended with crossfades.
+[Download the credits](/downloads/open-instruments-2026/the-quiet-hours/CREDITS.txt).
 
 ## Self-contained studio sketches
 

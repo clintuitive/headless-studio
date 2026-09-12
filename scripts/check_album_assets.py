@@ -16,7 +16,7 @@ def main():
             file=args.asset_root/'Samples/LM-2'/name
             if not file.is_file():missing.append(str(file))
     if args.album in ['all','quiet-hours']:
-        for name in ['SteinwayPiano','Mellotron']:
+        for name in ['OpenPiano','OpenStrings']:
             folder=args.asset_root/'Samples'/name;manifest=folder/'manifest.json'
             if not manifest.is_file():missing.append(str(manifest));continue
             zones=json.loads(manifest.read_text())

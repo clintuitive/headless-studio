@@ -1,7 +1,7 @@
 # Full album rebuilds
 
 The score modules contain individual writing and forms. The renderer uses
-NumPy/SciPy synthesis and a repaired stereo EXS sampler, with FFmpeg export.
+NumPy/SciPy synthesis and a stereo zone sampler, with FFmpeg export.
 AI assisted the composition, arrangement and code; no generative-audio service
 or generated vocals were used for these recordings.
 
@@ -17,10 +17,20 @@ python scripts/album_v2/render.py --album quiet-hours \
 The asset root must contain:
 
 - Sign-Off: `Samples/LM-2/kick.wav`, `snare-m.wav`, `hhclosed.wav`.
-- The Quiet Hours: `Samples/SteinwayPiano/manifest.json` and its extracted WAVs;
-  `Samples/Mellotron/manifest.json` and its extracted WAVs, including Cello zones.
+- The Quiet Hours: `Samples/OpenPiano/manifest.json` and prepared Salamander WAVs;
+  `Samples/OpenStrings/manifest.json` and prepared VSCO WAVs.
+  See `THIRD_PARTY.md` for credits and source licenses.
 
-These assets are not redistributed. Obtain and use them under their licenses.
+Prepare the exact piano and string subset from pinned, licensed source revisions:
+
+```bash
+python scripts/prepare_open_instruments.py --asset-root /path/to/studio-assets
+```
+
+This downloads source samples and license records outside the repository and
+uses FFmpeg to prepare stereo WAVs. It implements the selected notes and
+velocity layers, not the source SFZ's pedal/noise/resonance features.
+The source licenses and attribution requirements still apply.
 Run `python scripts/check_album_assets.py --asset-root /path/to/studio-assets`
 for a preflight. For a no-asset first render, use `generate_portable_samples.py`.
 
@@ -41,8 +51,8 @@ Sign-Off slows and warps pitched material while drum attacks stay at final
 tempo. Rabbit Ears and Vertical Hold carry the heaviest damage. Other tracks
 provide softer and ambient contrast. Quiet Hours has eleven new scores and
 the preserved Slow Rain composition with the selected performance treatment.
-Fixed measured piano/string calibration replaces the private audition WAV
-dependency without changing its gain values.
+Fixed piano/string calibration keeps the bowed strings about 14 dB behind
+the piano in the Slow Rain reference; the same gains apply across the record.
 
 Mastering uses gain only: −22 LUFS for core tracks, −23 for selected quieter
 pieces, with a −1.2 dBTP ceiling taking priority. WAV and MP3 are measured after
@@ -53,3 +63,6 @@ A nonlinear music bus is a group stem; use dry sources to rebalance its inputs.
 completed session tree and the original artwork under `Releases/<album>/`.
 It is not necessary for the portable demos or an individual track render.
 Technical checks do not replace a full critical listening pass.
+
+The website revision uses these open sample sources. Existing distributor
+submissions are unchanged until the artist approves the new performances.

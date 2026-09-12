@@ -200,7 +200,7 @@ def quiet_source(spec):
     dry={};bank='Cello' if legacy else spec['strings']
     for part in ['piano','strings']:
         if part=='strings' and not bank:dry[part]=zeros(int(seconds*SR));continue
-        sampler=ExsSampler(str(ROOT/'Samples'/('SteinwayPiano' if part=='piano' else 'Mellotron')),
+        sampler=ExsSampler(str(ROOT/'Samples'/('OpenPiano' if part=='piano' else 'OpenStrings')),
             rng=np.random.default_rng(731 if part=='piano' else 732) if legacy else seeded(spec['title'],part),
             stereo_output=True,release=.22 if part=='piano' else .09,groups=[bank] if part=='strings' else None)
         dry[part]=sampler.render(events[part],seconds,attack=.25 if part=='strings' else 0)
@@ -209,11 +209,10 @@ def quiet_source(spec):
     return dry,dict(seconds=seconds,events=events)
 
 def quiet_mix(spec,dry):
-    # Preserve the selected audition's fixed calibration across the full record.
-    # Measured peaks of the approved audition's dry piano and cello.
-    # Constants keep identical calibration without requiring private audition WAVs.
-    p=dry['piano']*(.42/np.float32(1.1873321533203125))
-    s=dry['strings']*(.065/np.float32(0.9425227642059326))
+    # Fixed album calibration: keep the piano forward and bowed strings behind it.
+    # The open-instrument Slow Rain reference has strings about 14 dB below piano.
+    p=dry['piano']*.353735
+    s=dry['strings']*.04244
     p=dsp.filt(dsp.filt(p,11000),45,'highpass');s=dsp.filt(dsp.filt(s,4000),180,'highpass')
     return dict(piano=p,strings=s,room=dsp.room(p+s,1.5)*.07)
 
@@ -234,7 +233,8 @@ def deliver(album,num,spec,stems,folder):
     master=BUILD/album/'Masters'/f'{name}.wav';master.parent.mkdir(parents=True,exist_ok=True)
     preview=BUILD/album/'Listening'/f'{name}.mp3';preview.parent.mkdir(parents=True,exist_ok=True)
     subprocess.run(['ffmpeg','-v','error','-y','-i',str(work),'-af','aresample=osf=s32:output_sample_bits=24:dither_method=triangular','-c:a','pcm_s24le',str(master)],check=True,timeout=120)
-    subprocess.run(['ffmpeg','-v','error','-y','-i',str(work),'-c:a','libmp3lame','-b:a','192k',str(preview)],check=True,timeout=120)
+    credits = ('Piano: Salamander Grand Piano v3 by Alexander Holm; mapping kinwie; retuning Markus Fiedler; CC BY 3.0 https://creativecommons.org/licenses/by/3.0/ ; source https://github.com/sfzinstruments/SalamanderGrandPiano ; onset-adjusted, retuned and performed. Strings: VSCO 2 CE, Versilian Studios and Ivy Audio, CC0; normalized and sustain-extended.' if album=='The Quiet Hours' else 'Python synthesis and LM-2 drum samples.')
+    subprocess.run(['ffmpeg','-v','error','-y','-i',str(work),'-c:a','libmp3lame','-b:a','192k','-metadata','artist=Clintuitive','-metadata',f'album={album}','-metadata',f'title={spec["title"]}','-metadata',f'track={num}/12','-metadata',f'comment={credits}',str(preview)],check=True,timeout=120)
     final=dsp.meter(master);mp3=dsp.meter(preview)
     expected_lufs=float(m['input_i'])+db
     assert abs(float(final['input_i'])-expected_lufs)<.3,(name,final)

@@ -48,7 +48,9 @@ python scripts/album_v2/render.py --album sign-off --track 2 \
 ```
 
 The sampled albums require independently obtained assets: LM-2 drum hits,
-extracted SteinwayPiano and Mellotron libraries. They are **not included**.
+Salamander Grand Piano (CC BY 3.0) and VSCO Community Edition strings (CC0).
+They are **not included**. The prepared instruments use `Samples/OpenPiano`
+and `Samples/OpenStrings`; credit their creators when publishing audio.
 Do not redistribute factory samples or infer asset rights from this code's
 license. The portable examples need none of those assets.
 
@@ -117,3 +119,6 @@ assets retain their own terms; the license does not grant rights in samples
 or recordings that are not included in the repository.
 
 See [third-party licensing boundaries](THIRD_PARTY.md) and [publication checks](SECURITY.md).
+
+For a sample instrument with no external recordings, run
+`python scripts/generate_sampler_demo.py --output-dir Tracks/sampler-demo`.

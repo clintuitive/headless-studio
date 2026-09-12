@@ -20,11 +20,11 @@ contrast as much as it needs a recognizable palette.
 performance treatment. The other eleven pieces have new themes and forms.
 The sampled piano retains stereo information, with strings used selectively.
 
-[Listen to the rebuilt albums](/music.html). These are the new masters on this
-site. Both replacements were submitted to DistroKid on September 12, 2026.
-The original editions have been removed from the DistroKid release list, with
-store takedowns requested. Publication of the new editions and removal of the
-old ones are still subject to each streaming service's processing.
+[Listen to the albums](/music.html). The website edition of The Quiet Hours
+now uses Salamander Grand Piano and VSCO Community Edition strings, with
+its composition and event timing preserved. Instrument credits and license
+links are on the listening page. This edition is awaiting the artist's listening
+review before any further distributor submission.
 
 ## What changed in the studio
 

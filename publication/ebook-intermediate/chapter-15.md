@@ -57,6 +57,12 @@ list; their store takedowns have been requested. Neither a submission
 confirmation nor an empty distributor list proves a store has finished
 processing the change.
 
+A later website listening revision of The Quiet Hours uses Salamander Grand
+Piano and VSCO Community Edition strings. That revision is separate from the
+submitted files and awaits the artist's approval before distributor changes.
+The [music page](https://clintjohnson.cloud/headless-studio/music.html) identifies the current listening edition and
+provides its instrument credits.
+
 ## Retire the old editions in a controlled sequence
 
 The intended result is one current edition of each album, without confusing

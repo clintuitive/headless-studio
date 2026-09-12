@@ -4,7 +4,7 @@ voice a real recording -- no GM soundfont anywhere.
 The demo (Sources/ambient_demo.mp3) stays the track's heart: its real
 fade-in opens, its body loops under everything with 6s equal-power
 crossfades, its own fade-out ends the piece. Around it, from the
-GarageBand/Logic factory library via exs_extract.py:
+historical local instrument set (not included or recommended as an asset source):
 
 - Steinway Grand piano -- the recurring theme, stated alone over the wash,
   returning in the false calm and the afterglow; hammered low octaves
@@ -518,7 +518,7 @@ class ExsSampler:
     note and velocity (same-range zones act as round-robins), linear-
     interpolation resampling to exact pitch, natural sample decay with a
     release fade at note-off. `groups` filters the zone map by group-name
-    substring -- how one Mellotron extraction serves as strings, cello,
+    substring -- how a multi-bank instrument serves as strings, cello,
     choir and flute, and how the acoustic guitar drops its palm-mute zones."""
 
     def __init__(self, sample_dir, pickup=None, deterministic=False, groups=None):

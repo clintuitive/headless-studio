@@ -85,7 +85,13 @@ The asset root contains `Samples/`. Sign-Off needs the three LM-2 one-shots
 listed in the renderer. The website revision of The Quiet Hours uses the prepared Salamander piano
 and VSCO string manifests and WAVs under `Samples/OpenPiano` and
 `Samples/OpenStrings`. These libraries are not redistributed
-with the code. The portable examples work without them.
+with the code. Run `python scripts/prepare_open_instruments.py --asset-root
+/path/to/studio-assets` to download pinned sources and prepare the required zones.
+Salamander is by Alexander Holm (mapping by kinwie, retuning by Markus Fiedler),
+under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/); preserve these
+credits and describe your changes when sharing performances. VSCO Community
+Edition is under CC0. See the repository's `THIRD_PARTY.md` for full credits.
+The portable examples work without external samples.
 
 Use `--remix` only when the cached dry performance is still the performance
 you want. It skips composition and instrument rendering. A melody, tempo,
