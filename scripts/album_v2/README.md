@@ -64,5 +64,4 @@ completed session tree and the original artwork under `Releases/<album>/`.
 It is not necessary for the portable demos or an individual track render.
 Technical checks do not replace a full critical listening pass.
 
-The website revision uses these open sample sources. Existing distributor
-submissions are unchanged until the artist approves the new performances.
+The website revision uses these open sample sources.

@@ -11,9 +11,7 @@ settings recorded so the work can be revised and reproduced.
 
 Everything published here is extracted from a working pipeline that has
 produced [complete albums](/music.html). The September 2026 rebuilds are
-available on this site and were submitted to DistroKid on September 12, 2026.
-Streaming publication is pending; takedowns of the original editions have been
-requested.
+available in full on this site.
 
 ## The book
 

@@ -34,7 +34,7 @@ def main():
         assert digest(folder/'cover_3000.png')==digest(ROOT/'Releases'/album/'cover_3000.png')
         metadata=dict(album=album,artist='Clintuitive',titles=[s['title'] for s in specs],instrumental=True,explicit=False,
             artwork='cover_3000.png',recording_version='New recordings / revised arrangements, not Audio Swap corrections',
-            distribution_status='New release and original takedown authorized; submission pending',
+            distribution_status='Delivery package; distribution tracked separately',
             ai_disclosure='AI contributed compositions and arrangements; Python synthesis and sample playback, no generated vocals',tracks=rows)
         (folder/'release.json').write_text(json.dumps(metadata,indent=2))
         text=['# '+album,'','New recordings, same album and track titles. Original artwork retained.','',

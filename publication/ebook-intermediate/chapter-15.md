@@ -50,18 +50,9 @@ The replacement submissions follow that selection and retain the original titles
 and artwork. Optional paid extras are separate choices; a new upload form's
 defaults are not evidence that an extra was used on the original release.
 
-Both replacements were submitted successfully on September 12, 2026, using
-the verified masters and no paid extras. DistroKid is processing them for
-streaming services. The original editions no longer appear in its release
-list; their store takedowns have been requested. Neither a submission
-confirmation nor an empty distributor list proves a store has finished
-processing the change.
-
-A later website listening revision of The Quiet Hours uses Salamander Grand
-Piano and VSCO Community Edition strings. That revision is separate from the
-submitted files; distributor updates will be handled separately.
-The [music page](https://clintjohnson.cloud/headless-studio/music.html) identifies the current listening edition and
-provides its instrument credits.
+The website edition of The Quiet Hours uses Salamander Grand Piano and
+VSCO Community Edition strings. The [music page](https://clintjohnson.cloud/headless-studio/music.html)
+provides the recordings and instrument credits.
 
 ## Retire the old editions in a controlled sequence
 
@@ -92,9 +83,8 @@ chapter order and the EPUB package, then inspect the rendered pages. Building
 should write a local artifact; deploying should be an explicit separate step.
 A backup of the previous site makes a publishing mistake recoverable.
 
-The listening page can offer the new recordings directly while distributor
-publication is pending. Update the streaming links only when the new store
-pages are verified. Clear version labels save a listener from comparing an
+The listening page offers the recordings directly. Verify streaming links
+before publishing them. Clear version labels save a listener from comparing an
 old stream with a new production description and wondering why they disagree.
 
 A headless studio is most useful when it leaves an understandable trail:
