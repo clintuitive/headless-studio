@@ -23,8 +23,7 @@ The sampled piano retains stereo information, with strings used selectively.
 [Listen to the albums](/music.html). The website edition of The Quiet Hours
 now uses Salamander Grand Piano and VSCO Community Edition strings, with
 its composition and event timing preserved. Instrument credits and license
-links are on the listening page. This edition is awaiting the artist's listening
-review before any further distributor submission.
+links are on the listening page.
 
 ## What changed in the studio
 

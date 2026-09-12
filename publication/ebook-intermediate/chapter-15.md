@@ -59,7 +59,7 @@ processing the change.
 
 A later website listening revision of The Quiet Hours uses Salamander Grand
 Piano and VSCO Community Edition strings. That revision is separate from the
-submitted files and awaits the artist's approval before distributor changes.
+submitted files; distributor updates will be handled separately.
 The [music page](https://clintjohnson.cloud/headless-studio/music.html) identifies the current listening edition and
 provides its instrument credits.
 
