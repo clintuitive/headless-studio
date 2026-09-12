@@ -7,7 +7,7 @@ IMAGES = {
     "publication/images/kick_comparison.png", "publication/images/nam_before_after.png",
     "publication/images/stems_null_test.png", "publication/images/stems_stack.png",
 }
-TEXT = {".py", ".md", ".txt", ".yml", ".yaml", ".css"}
+TEXT = {".py", ".md", ".txt", ".yml", ".yaml", ".css", ".js"}
 SPECIAL = {"LICENSE", ".gitignore"}
 PRIVATE = {".env", ".aws", ".ssh", ".claude", ".codex", ".vscode", ".idea",
            "samples", "soundfonts", "amps", "irs", "sources", "releases", "auditions"}

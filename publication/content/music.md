@@ -8,70 +8,51 @@ Music by Clintuitive. These recordings use Python synthesis and sample
 playback, with AI assistance in writing, arrangement and production. No
 generated vocals or external generative-audio service was used.
 
-## Sign-Off
+<section class="album-player" id="sign-off-listen" aria-label="Sign-Off album player">
+<div class="album-intro"><img src="/downloads/rebuilt-2026/sign-off/cover.png" alt="Sign-Off album artwork" width="176" height="176" loading="lazy"><div><p class="album-eyebrow">CLINTUITIVE · ALBUM</p><h2>Sign-Off</h2><p class="album-description">A late-night broadcast. Worn textures, steady rhythms, and room to dream.</p><p class="album-length">12 tracks · 28:19</p></div></div>
+<div class="album-console" hidden>
+<div class="now-playing"><span class="playback-state" role="status" aria-live="polite">Ready to play</span><strong class="current-title">Test Pattern</strong></div>
+<div class="album-transport"><button type="button" class="previous-track" aria-label="Previous track">&#9198;</button><button type="button" class="toggle-play" aria-label="Play Sign-Off"><span class="play-icon" aria-hidden="true">&#9654;</span> <span class="play-label">Play</span></button><button type="button" class="next-track" aria-label="Next track">&#9197;</button></div>
+<div class="album-timeline"><span class="elapsed">0:00</span><input class="seek-track" type="range" min="0" max="100" value="0" step="0.1" disabled aria-label="Seek in Sign-Off"><span class="track-length">1:39</span></div>
+</div>
+<ol class="album-tracklist">
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/01%20Test%20Pattern.mp3"><span class="track-number">01</span><span class="track-name">Test Pattern</span><span class="track-duration">1:39</span></a></li>
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/02%20Sodium%20Lights.mp3"><span class="track-number">02</span><span class="track-name">Sodium Lights</span><span class="track-duration">2:56</span></a></li>
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/03%20Rabbit%20Ears.mp3"><span class="track-number">03</span><span class="track-name">Rabbit Ears</span><span class="track-duration">1:29</span></a></li>
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/04%20Late%20Forecast.mp3"><span class="track-number">04</span><span class="track-name">Late Forecast</span><span class="track-duration">2:42</span></a></li>
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/05%20Polaroid%20Summer.mp3"><span class="track-number">05</span><span class="track-name">Polaroid Summer</span><span class="track-duration">2:22</span></a></li>
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/06%20Drive%20Home%2C%201983.mp3"><span class="track-number">06</span><span class="track-name">Drive Home, 1983</span><span class="track-duration">2:52</span></a></li>
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/07%20Static%20Bloom.mp3"><span class="track-number">07</span><span class="track-name">Static Bloom</span><span class="track-duration">2:37</span></a></li>
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/08%20The%20Arcade%20After%20Close.mp3"><span class="track-number">08</span><span class="track-name">The Arcade After Close</span><span class="track-duration">2:00</span></a></li>
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/09%20Curfew.mp3"><span class="track-number">09</span><span class="track-name">Curfew</span><span class="track-duration">2:26</span></a></li>
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/10%20Vertical%20Hold.mp3"><span class="track-number">10</span><span class="track-name">Vertical Hold</span><span class="track-duration">2:19</span></a></li>
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/11%20School%20Night.mp3"><span class="track-number">11</span><span class="track-name">School Night</span><span class="track-duration">2:09</span></a></li>
+<li><a class="album-track" href="/downloads/rebuilt-2026/sign-off/12%20Sign-Off.mp3"><span class="track-number">12</span><span class="track-name">Sign-Off</span><span class="track-duration">2:49</span></a></li>
+</ol>
+</section>
 
-An imperfect late-night broadcast: steady drum attacks, worn pitched sources, and room for lush, dreamy ambient pieces.
-
-<img src="/downloads/rebuilt-2026/sign-off/cover.png" alt="Sign-Off original album artwork" width="300" height="300" loading="lazy">
-
-<div class="listening-track"><h3>01 Test Pattern</h3><audio controls preload="none" aria-label="01 Test Pattern"><source src="/downloads/rebuilt-2026/sign-off/01%20Test%20Pattern.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>02 Sodium Lights</h3><audio controls preload="none" aria-label="02 Sodium Lights"><source src="/downloads/rebuilt-2026/sign-off/02%20Sodium%20Lights.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>03 Rabbit Ears</h3><audio controls preload="none" aria-label="03 Rabbit Ears"><source src="/downloads/rebuilt-2026/sign-off/03%20Rabbit%20Ears.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>04 Late Forecast</h3><audio controls preload="none" aria-label="04 Late Forecast"><source src="/downloads/rebuilt-2026/sign-off/04%20Late%20Forecast.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>05 Polaroid Summer</h3><audio controls preload="none" aria-label="05 Polaroid Summer"><source src="/downloads/rebuilt-2026/sign-off/05%20Polaroid%20Summer.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>06 Drive Home, 1983</h3><audio controls preload="none" aria-label="06 Drive Home, 1983"><source src="/downloads/rebuilt-2026/sign-off/06%20Drive%20Home%2C%201983.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>07 Static Bloom</h3><audio controls preload="none" aria-label="07 Static Bloom"><source src="/downloads/rebuilt-2026/sign-off/07%20Static%20Bloom.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>08 The Arcade After Close</h3><audio controls preload="none" aria-label="08 The Arcade After Close"><source src="/downloads/rebuilt-2026/sign-off/08%20The%20Arcade%20After%20Close.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>09 Curfew</h3><audio controls preload="none" aria-label="09 Curfew"><source src="/downloads/rebuilt-2026/sign-off/09%20Curfew.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>10 Vertical Hold</h3><audio controls preload="none" aria-label="10 Vertical Hold"><source src="/downloads/rebuilt-2026/sign-off/10%20Vertical%20Hold.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>11 School Night</h3><audio controls preload="none" aria-label="11 School Night"><source src="/downloads/rebuilt-2026/sign-off/11%20School%20Night.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>12 Sign-Off</h3><audio controls preload="none" aria-label="12 Sign-Off"><source src="/downloads/rebuilt-2026/sign-off/12%20Sign-Off.mp3" type="audio/mpeg"></audio></div>
-
-
-## The Quiet Hours
-
-Piano-led night music. This listening edition pairs Salamander grand piano with
-VSCO chamber strings, preserving the compositions and timing of the recent
-rebuild, including Slow Rain.
-
-<span id="quiet-hours-listen"></span>
-
-<img src="/downloads/open-instruments-2026/the-quiet-hours/cover.png" alt="The Quiet Hours original album artwork" width="300" height="300" loading="lazy">
-
-<div class="listening-track"><h3>01 First Light</h3><audio controls preload="none" aria-label="01 First Light"><source src="/downloads/open-instruments-2026/the-quiet-hours/01%20First%20Light.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>02 Slow Rain</h3><audio controls preload="none" aria-label="02 Slow Rain"><source src="/downloads/open-instruments-2026/the-quiet-hours/02%20Slow%20Rain.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>03 Window Seat</h3><audio controls preload="none" aria-label="03 Window Seat"><source src="/downloads/open-instruments-2026/the-quiet-hours/03%20Window%20Seat.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>04 Mile Markers</h3><audio controls preload="none" aria-label="04 Mile Markers"><source src="/downloads/open-instruments-2026/the-quiet-hours/04%20Mile%20Markers.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>05 Paper Boats</h3><audio controls preload="none" aria-label="05 Paper Boats"><source src="/downloads/open-instruments-2026/the-quiet-hours/05%20Paper%20Boats.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>06 The Small Hours</h3><audio controls preload="none" aria-label="06 The Small Hours"><source src="/downloads/open-instruments-2026/the-quiet-hours/06%20The%20Small%20Hours.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>07 Northbound</h3><audio controls preload="none" aria-label="07 Northbound"><source src="/downloads/open-instruments-2026/the-quiet-hours/07%20Northbound.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>08 Marginalia</h3><audio controls preload="none" aria-label="08 Marginalia"><source src="/downloads/open-instruments-2026/the-quiet-hours/08%20Marginalia.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>09 The Long Way Home</h3><audio controls preload="none" aria-label="09 The Long Way Home"><source src="/downloads/open-instruments-2026/the-quiet-hours/09%20The%20Long%20Way%20Home.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>10 Inland Sea</h3><audio controls preload="none" aria-label="10 Inland Sea"><source src="/downloads/open-instruments-2026/the-quiet-hours/10%20Inland%20Sea.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>11 Evening Glass</h3><audio controls preload="none" aria-label="11 Evening Glass"><source src="/downloads/open-instruments-2026/the-quiet-hours/11%20Evening%20Glass.mp3" type="audio/mpeg"></audio></div>
-
-<div class="listening-track"><h3>12 Last Page</h3><audio controls preload="none" aria-label="12 Last Page"><source src="/downloads/open-instruments-2026/the-quiet-hours/12%20Last%20Page.mp3" type="audio/mpeg"></audio></div>
+<section class="album-player" id="quiet-hours-listen" aria-label="The Quiet Hours album player">
+<div class="album-intro"><img src="/downloads/open-instruments-2026/the-quiet-hours/cover.png" alt="The Quiet Hours album artwork" width="176" height="176" loading="lazy"><div><p class="album-eyebrow">CLINTUITIVE · ALBUM</p><h2>The Quiet Hours</h2><p class="album-description">Piano-led night music. Quiet strings, unhurried melodies, and space between the notes.</p><p class="album-length">12 tracks · 25:19</p></div></div>
+<div class="album-console" hidden>
+<div class="now-playing"><span class="playback-state" role="status" aria-live="polite">Ready to play</span><strong class="current-title">First Light</strong></div>
+<div class="album-transport"><button type="button" class="previous-track" aria-label="Previous track">&#9198;</button><button type="button" class="toggle-play" aria-label="Play The Quiet Hours"><span class="play-icon" aria-hidden="true">&#9654;</span> <span class="play-label">Play</span></button><button type="button" class="next-track" aria-label="Next track">&#9197;</button></div>
+<div class="album-timeline"><span class="elapsed">0:00</span><input class="seek-track" type="range" min="0" max="100" value="0" step="0.1" disabled aria-label="Seek in The Quiet Hours"><span class="track-length">1:30</span></div>
+</div>
+<ol class="album-tracklist">
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/01%20First%20Light.mp3"><span class="track-number">01</span><span class="track-name">First Light</span><span class="track-duration">1:30</span></a></li>
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/02%20Slow%20Rain.mp3"><span class="track-number">02</span><span class="track-name">Slow Rain</span><span class="track-duration">4:16</span></a></li>
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/03%20Window%20Seat.mp3"><span class="track-number">03</span><span class="track-name">Window Seat</span><span class="track-duration">1:51</span></a></li>
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/04%20Mile%20Markers.mp3"><span class="track-number">04</span><span class="track-name">Mile Markers</span><span class="track-duration">1:56</span></a></li>
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/05%20Paper%20Boats.mp3"><span class="track-number">05</span><span class="track-name">Paper Boats</span><span class="track-duration">1:35</span></a></li>
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/06%20The%20Small%20Hours.mp3"><span class="track-number">06</span><span class="track-name">The Small Hours</span><span class="track-duration">2:17</span></a></li>
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/07%20Northbound.mp3"><span class="track-number">07</span><span class="track-name">Northbound</span><span class="track-duration">2:08</span></a></li>
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/08%20Marginalia.mp3"><span class="track-number">08</span><span class="track-name">Marginalia</span><span class="track-duration">1:26</span></a></li>
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/09%20The%20Long%20Way%20Home.mp3"><span class="track-number">09</span><span class="track-name">The Long Way Home</span><span class="track-duration">2:06</span></a></li>
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/10%20Inland%20Sea.mp3"><span class="track-number">10</span><span class="track-name">Inland Sea</span><span class="track-duration">2:39</span></a></li>
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/11%20Evening%20Glass.mp3"><span class="track-number">11</span><span class="track-name">Evening Glass</span><span class="track-duration">1:26</span></a></li>
+<li><a class="album-track" href="/downloads/open-instruments-2026/the-quiet-hours/12%20Last%20Page.mp3"><span class="track-number">12</span><span class="track-name">Last Page</span><span class="track-duration">2:08</span></a></li>
+</ol>
+</section>
 
 ### Instrument credits
 
@@ -105,3 +86,5 @@ You can listen to both albums in full on this page.
 
 Read [what changed](/rebuilding-the-albums.html), explore the [free book](/book.html),
 or get the [source code](https://github.com/clintuitive/headless-studio).
+
+<script src="/static/album-player.js?v=1" defer></script>

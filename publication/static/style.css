@@ -322,3 +322,42 @@ p code, li code, h2 code, h3 code {
 audio { display: block; width: 100%; max-width: 42rem; margin: .6rem 0 1.5rem; }
 .listening-track h3 { font-size: 1rem; margin-bottom: .25rem; }
 .listening-track { padding: .25rem 0; border-bottom: 1px solid #ffffff18; }
+
+/* Album players */
+.album-player { margin: 2.5rem 0 3rem; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; background: var(--bg-soft); }
+.album-intro { display: grid; grid-template-columns: 156px 1fr; gap: 1.5rem; padding: 1.5rem; align-items: center; }
+.album-intro img { width: 100%; height: auto; border-radius: 8px; box-shadow: 0 8px 24px #0002; margin: 0; }
+.album-player h2 { margin: .3rem 0 .5rem; border: 0; padding: 0; font-size: 1.9rem; letter-spacing: -.04em; line-height: 1.15; }
+.album-player .album-eyebrow { margin: 0; font-size: .66rem; letter-spacing: .14em; color: var(--accent); font-weight: 700; }
+.album-player .album-description { font-size: .9rem; line-height: 1.5; margin: .6rem 0; color: var(--text-soft); }
+.album-player .album-length { margin: .7rem 0 0; font-size: .75rem; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.album-console { padding: 1.25rem 1.5rem; border-top: 1px solid var(--border); background: var(--bg); }
+.album-console[hidden] { display: none; }
+.now-playing { display: flex; flex-direction: column; text-align: center; gap: .15rem; }
+.playback-state { color: var(--text-soft); font-size: .75rem; min-height: 1.3em; }
+.current-title { font-size: 1rem; }
+.album-transport { display: flex; justify-content: center; align-items: center; gap: .75rem; margin: .9rem 0; }
+.album-transport button { font: inherit; cursor: pointer; border: 1px solid var(--border); color: var(--text); background: var(--bg-soft); min-width: 44px; min-height: 44px; border-radius: 50%; padding: .4rem; }
+.album-transport .toggle-play { border: 0; background: var(--accent); color: var(--bg); border-radius: 24px; min-width: 118px; font-weight: 700; font-size: .85rem; }
+.album-transport button:disabled { opacity: .35; cursor: default; }
+.album-timeline { display: flex; align-items: center; gap: .75rem; font-size: .72rem; font-variant-numeric: tabular-nums; color: var(--text-soft); }
+.album-timeline input { flex: 1; width: 0; height: 28px; min-width: 0; accent-color: var(--accent); cursor: pointer; }
+.album-player .album-tracklist { margin: 0; padding: .4rem 0; list-style: none; border-top: 1px solid var(--border); }
+.album-player .album-tracklist li { margin: 0; padding: 0; }
+.album-track { display: grid; grid-template-columns: 2rem 1fr auto; gap: .6rem; padding: .65rem 1.5rem; align-items: center; color: var(--text); text-decoration: none; font-size: .88rem; min-height: 44px; }
+.album-track:hover { background: var(--accent-soft); }
+.album-track.is-current { color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+.track-number, .track-duration { font-size: .72rem; font-variant-numeric: tabular-nums; color: var(--text-soft); }
+.is-playing .is-current .track-number { color: var(--accent); }
+.album-player :focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+@media (max-width: 480px) {
+  .album-intro { grid-template-columns: 100px 1fr; padding: 1rem; gap: 1rem; }
+  .album-player h2 { font-size: 1.5rem; }
+  .album-player .album-description { font-size: .8rem; }
+  .album-console { padding: 1rem; }
+  .album-track { padding: .7rem 1rem; grid-template-columns: 1.4rem 1fr auto; }
+}
+@media (max-width: 600px) {
+  .site-header nav { display: flex; flex-wrap: wrap; gap: .4rem 1rem; width: 100%; }
+  .site-header nav a { margin: 0; }
+}
