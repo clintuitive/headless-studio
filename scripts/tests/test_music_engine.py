@@ -162,7 +162,7 @@ class NamStateTests(unittest.TestCase):
         with patch("music_engine.plugins.load_plugin", return_value=plugin):
             result = load_nam("/tmp/example.nam", "/tmp/NAM.vst3")
         self.assertIs(result, plugin)
-        self.assertIn(b"/tmp/example.nam", bytes(plugin.preset_data))
+        self.assertIn(os.path.abspath("/tmp/example.nam").encode(), bytes(plugin.preset_data))
 
 
 if __name__ == "__main__":
