@@ -111,6 +111,6 @@ technical manuscript is archival; the intermediate edition is maintained.
 
 ## License
 
-[MIT](LICENSE) applies to the code. Third-party assets retain their own terms.
-The intermediate book and website prose are © Clint Johnson; the code license
-does not grant rights in third-party samples or recordings.
+[MIT](LICENSE) applies to the code and accompanying documentation. Third-party
+assets retain their own terms; the license does not grant rights in samples
+or recordings that are not included in the repository.

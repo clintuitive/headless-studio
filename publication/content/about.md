@@ -6,13 +6,12 @@ description: The Headless Studio — music production as code, written by Clint 
 
 **The Headless Studio** is about making records with code. Real VST3 amp
 sims, hardware drum machine samples, factory sampler libraries, convolution
-rooms — driven entirely from Python scripts, no DAW open, every render
-bit-identical and version-controlled.
+rooms — driven from Python scripts, with scores, source assets and render
+settings recorded so the work can be revised and reproduced.
 
 Everything published here is extracted from a working pipeline that has
-produced [complete albums](/music.html) — streaming now: the scripts run, the
-audio ships, and the gotchas documented here were each paid for with a real
-lost afternoon.
+produced [complete albums](/music.html). The September 2026 rebuilds are
+available on this site; replacement streaming distribution is pending.
 
 ## The book
 
@@ -25,8 +24,7 @@ on first use. The blog assumes expertise; the book builds it.
 It's **complete and free** — all 15 chapters and 5 appendices,
 [readable in full here](/book.html): hosting plugins headlessly, rescuing
 incompatible ones, reverse-engineering the EXS sampler format, synthesis from
-scratch, arranging as data, humanization, mixing, and stems that provably sum
-to the master. And the entire working pipeline is
+scratch, arranging as data, humanization, mixing, and processed float stems verified against the working mix. And the entire working pipeline is
 [free and open on GitHub](https://github.com/clintuitive/headless-studio) under
 the MIT license.
 
@@ -36,5 +34,4 @@ afternoon and you feel like it, you can
 
 ## Colophon
 
-Static HTML built by ~200 lines of Python. No trackers, no analytics, no
-JavaScript. The RSS feed is [/feed.xml](/feed.xml).
+Static HTML built from Markdown with Python. The RSS feed is [/feed.xml](/feed.xml).
