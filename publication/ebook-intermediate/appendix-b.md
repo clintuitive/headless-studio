@@ -95,7 +95,12 @@ interface every downstream consumer (the `ExsSampler`) reads:
 
 ## Legal reminder
 
-Apple's license permits using factory content in your own musical
-compositions, commercial ones included. It does not permit redistributing
-the samples as samples. This reference describes the *format*; what you
-extract stays in your own productions.
+Apple's current [GarageBand license, sections 2G and 2I](https://www.apple.com/legal/sla/docs/GarageBand.pdf)
+permits certain original soundtrack uses, but also restricts standalone
+extraction, use outside the software's intended context, redistribution and
+reverse engineering, subject to the exceptions in those terms and applicable
+law. Permission to distribute a finished composition is not blanket permission
+to extract factory samples for another renderer. This format walkthrough does
+not establish that permission. Use the parser with files you created or have
+explicit permission to parse and extract; no Apple software or sample content
+is included in this repository.

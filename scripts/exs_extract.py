@@ -1,6 +1,10 @@
 """Minimal EXS24 instrument parser/extractor for the Logic/GarageBand
 factory library.
 
+Use only with files you created or are authorized to parse and extract.
+Format support does not grant permission to extract licensed factory content.
+See THIRD_PARTY.md for the licensing boundary.
+
 An .exs file is a sequence of chunks: 84-byte header (u32 flags -- kind in
 the high byte -- u32 data size, u32 id, u32 pad, 'TBOS' magic, 64-byte
 name) followed by `size` bytes of data. Zone chunks (kind 0x01 in the

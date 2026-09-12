@@ -18,10 +18,17 @@ public documentation.
 This post reverse-engineers the format in about 60 lines of Python. The
 parser itself is pure Python and runs anywhere; EXS files also turn up in
 Logic sample libraries and third-party instrument packs, so the knowledge
-travels. (On the legal side: Apple's license lets you use this content in
-your own musical compositions, including commercial ones. It does **not** let
-you redistribute the samples themselves — extract for your own pipeline, not
-for a sample pack.)
+travels.
+
+Apple's current [GarageBand license, sections 2G and 2I](https://www.apple.com/legal/sla/docs/GarageBand.pdf)
+permits certain original soundtrack uses, but also restricts standalone
+extraction, use outside the software's intended context, redistribution and
+reverse engineering, subject to the exceptions in those terms and applicable
+law. Permission to distribute a finished composition is not blanket permission
+to extract factory samples for another renderer. This format walkthrough does
+not establish that permission. Use the parser with files you created or have
+explicit permission to parse and extract; no Apple software or sample content
+is included in this repository.
 
 ## Where the bodies are buried
 

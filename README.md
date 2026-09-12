@@ -115,3 +115,5 @@ technical manuscript is archival; the intermediate edition is maintained.
 [MIT](LICENSE) applies to the code and accompanying documentation. Third-party
 assets retain their own terms; the license does not grant rights in samples
 or recordings that are not included in the repository.
+
+See [third-party licensing boundaries](THIRD_PARTY.md) and [publication checks](SECURITY.md).
