@@ -23,12 +23,11 @@ import os
 import numpy as np
 from scipy.io import wavfile
 
-from generate_postrock_hammock import ExsSampler, stereo, SAMPLES
-from pedalboard import (Pedalboard, Reverb, LowpassFilter, HighpassFilter,
-                        Convolution)
+from music_engine import ExsSampler, stereo
 
 SR = 44100
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+SAMPLES = os.path.join(SCRIPT_DIR, "..", "Samples")
 OUT_DIR = os.path.join(SCRIPT_DIR, "..", "Tracks", "The Quiet Hours")
 ROOM_IR = os.path.join(SCRIPT_DIR, "..", "IRs", "Highly Damped Large Room.wav")
 
@@ -281,8 +280,10 @@ class TrackWriter:
 
 
 def main():
+    from pedalboard import Pedalboard, Reverb, LowpassFilter, HighpassFilter, Convolution
     os.makedirs(OUT_DIR, exist_ok=True)
-    piano_smp = ExsSampler(os.path.join(SAMPLES, "SteinwayPiano"))
+    sample_rng = np.random.default_rng(73)
+    piano_smp = ExsSampler(os.path.join(SAMPLES, "SteinwayPiano"), rng=sample_rng)
     mello_cache = {}
     room = Convolution(ROOM_IR, mix=1.0)
 
@@ -301,7 +302,11 @@ def main():
         if spec["strings"] and w.mello:
             bank = spec["strings"][0]
             if bank not in mello_cache:
-                mello_cache[bank] = ExsSampler(os.path.join(SAMPLES, "Mellotron"), groups=[bank])
+                mello_cache[bank] = ExsSampler(
+                    os.path.join(SAMPLES, "Mellotron"),
+                    rng=sample_rng,
+                    groups=[bank],
+                )
             mstr = stereo(mello_cache[bank].render(w.mello, total_secs, attack=0.28), pan=0.15)
             mstr = mstr / max(np.abs(mstr).max(), 1e-9) * 0.21
             mstr = Pedalboard([

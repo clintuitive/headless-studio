@@ -20,9 +20,8 @@ import numpy as np
 from scipy.io import wavfile
 
 import generate_postrock_hammock as hk
-from generate_postrock_hammock import (ExsSampler, render_brooklyn, stereo,
-                                       norm_peak, PIANO_THEME, CHORDS, PROGS,
-                                       SAMPLES)
+from generate_postrock_hammock import PIANO_THEME, CHORDS, PROGS, SAMPLES
+from music_engine import DrumSampler, ExsSampler, normalize_peak, stereo
 from pedalboard import (Pedalboard, Chorus, Delay, Reverb, Compressor, Gain,
                         HighpassFilter, LowpassFilter, PeakFilter,
                         LowShelfFilter, Convolution)
@@ -42,6 +41,7 @@ ROOM_IR = os.path.join(SCRIPT_DIR, "..", "IRs", "Highly Damped Large Room.wav")
 KICK, STICK, T_FLR, RIDE, HH_PEDAL = 36, 37, 43, 51, 44
 
 EVENTS = {"piano": [], "drums": [], "gbedL": [], "gbedR": []}
+brooklyn = DrumSampler(hk.BROOKLYN_DIR, sample_rate=SR, rng=rng, output_gain=1.3)
 
 
 def human(t, vel, t_sd=0.010, v_sd=5):
@@ -177,15 +177,15 @@ def main():
 
     print("Rendering ...")
     neck = dict(pickup=0.27, deterministic=True)
-    strat_l = ExsSampler(os.path.join(SAMPLES, "VintageStrat"), **neck)
-    strat_r = ExsSampler(os.path.join(SAMPLES, "VintageStrat"), **neck)
+    strat_l = ExsSampler(os.path.join(SAMPLES, "VintageStrat"), rng=rng, **neck)
+    strat_r = ExsSampler(os.path.join(SAMPLES, "VintageStrat"), rng=rng, **neck)
     gbed = (stereo(strat_l.render(EVENTS["gbedL"], total_secs), pan=-0.4)
             + stereo(strat_r.render(EVENTS["gbedR"], total_secs), pan=0.4))
-    gbed = norm_peak(gbed, 0.4)
-    piano_smp = ExsSampler(os.path.join(SAMPLES, "SteinwayPiano"))
+    gbed = normalize_peak(gbed, 0.4)
+    piano_smp = ExsSampler(os.path.join(SAMPLES, "SteinwayPiano"), rng=rng)
     piano = stereo(piano_smp.render(EVENTS["piano"], total_secs), pan=-0.08)
-    piano = norm_peak(piano, 0.5)
-    drums = render_brooklyn(EVENTS["drums"], total_secs)
+    piano = normalize_peak(piano, 0.5)
+    drums = brooklyn.render(EVENTS["drums"], total_secs)
     bass = hk.render_ample_bass(total_secs)
     if bass is None:
         raise SystemExit("Ample bass helper failed")

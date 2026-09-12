@@ -24,10 +24,7 @@ loaded with a real measured room IR, at per-instrument send levels, so
 the players all sound like they're in the same physical space.
 """
 
-import json
 import os
-import subprocess
-import tempfile
 import ctypes.util
 
 # Python 3.9's find_library doesn't search Homebrew's /opt/homebrew/lib,
@@ -42,13 +39,13 @@ def _find_library(name):
     return found
 ctypes.util.find_library = _find_library
 
-import struct
-
 import numpy as np
 import fluidsynth
 from pedalboard import (Pedalboard, Chorus, Delay, Reverb, Compressor, Gain,
-                        HighpassFilter, Mix, Chain, Convolution, load_plugin)
+                        HighpassFilter, Mix, Chain, Convolution)
 from scipy.io import wavfile
+
+from music_engine import load_nam, render_external_instrument
 
 SR = 44100
 BPM = 118
@@ -97,35 +94,6 @@ KIT = {
     "hho": ("hho.wav", 0.45),
 }
 
-
-def load_nam(model_path):
-    """Load the Neural Amp Modeler VST3 with an amp capture pre-selected.
-
-    NAM's model path is not an automatable parameter -- it lives in the
-    plugin state. The .vstpreset component chunk is iPlug2's serialization:
-    '###NeuralAmpModeler###' marker, version string, then two
-    length-prefixed strings (model path, IR path) ahead of the parameter
-    doubles. Splice the path into a fresh preset and hand it back."""
-    p = load_plugin(NAM_VST3)
-    pd = bytes(p.preset_data)
-    list_off = struct.unpack("<q", pd[40:48])[0]
-    comp, tail = pd[48:list_off], pd[list_off:]
-    i = comp.index(b"###NeuralAmpModeler###") + len(b"###NeuralAmpModeler###")
-    vlen = struct.unpack("<i", comp[i:i + 4])[0]
-    i += 4 + vlen
-    mlen = struct.unpack("<i", comp[i:i + 4])[0]
-    path = os.path.abspath(model_path).encode()
-    new_comp = comp[:i] + struct.pack("<i", len(path)) + path + comp[i + 4 + mlen:]
-    n = struct.unpack("<i", tail[4:8])[0]
-    entries = b""
-    for k in range(n):
-        e = tail[8 + k * 20:8 + (k + 1) * 20]
-        eid = e[:4]
-        off, size = (48, len(new_comp)) if eid == b"Comp" else (48 + len(new_comp), struct.unpack("<qq", e[4:20])[1])
-        entries += eid + struct.pack("<qq", off, size)
-    p.preset_data = (pd[:40] + struct.pack("<q", 48 + len(new_comp)) + new_comp
-                     + b"List" + struct.pack("<i", n) + entries)
-    return p
 
 CH_ARP = 0
 CH_LEAD = 1
@@ -271,26 +239,15 @@ def render_bus(events, total_secs, setup):
 def render_ample_bass(total_secs):
     """Render the bass stem through Ample Bass P Lite II in a Rosetta
     subprocess. Returns a (2, n) float array, or None to fall back."""
-    if not (os.path.exists(X86_PYTHON) and AMPLE_NOTES):
-        return None
-    with tempfile.TemporaryDirectory() as td:
-        events_path = os.path.join(td, "bass.json")
-        stem_path = os.path.join(td, "bass.wav")
-        with open(events_path, "w") as f:
-            json.dump({"duration": total_secs, "notes": AMPLE_NOTES}, f)
-        result = subprocess.run(
-            ["arch", "-x86_64", X86_PYTHON, AMPLE_HELPER, events_path, stem_path],
-            capture_output=True, text=True)
-        if result.returncode != 0:
-            print(f"Ample Bass helper failed, falling back to FluidSynth:\n{result.stderr.strip()}")
-            return None
-        print(result.stdout.strip())
-        _, data = wavfile.read(stem_path)
-    audio = (data.astype(np.float32) / 32768.0).T
-    n_samples = int(total_secs * SR)
-    if audio.shape[1] < n_samples:
-        audio = np.pad(audio, ((0, 0), (0, n_samples - audio.shape[1])))
-    return audio[:, :n_samples]
+    return render_external_instrument(
+        AMPLE_NOTES,
+        total_secs,
+        python_path=X86_PYTHON,
+        helper_path=AMPLE_HELPER,
+        sample_rate=SR,
+        architecture="x86_64",
+        label="Ample Bass",
+    )
 
 
 def setup_gtr(fs, sfid):

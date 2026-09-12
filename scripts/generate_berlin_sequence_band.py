@@ -5,13 +5,12 @@ Peter Hook-style high melodic bass, and a motorik kick/snare kit.
 F minor, 100 BPM. Rendered through FluidR3_GM.sf2 via FluidSynth.
 """
 
-import os
 import numpy as np
 import fluidsynth
 from scipy.io import wavfile
 
 SR = 44100
-SF_PATH = os.path.expanduser("~/.headless-studio/soundfonts/FluidR3_GM.sf2")
+SF_PATH = '/Users/clint/Desktop/FluidR3_GM.sf2'
 BPM = 100
 BEAT = 60.0 / BPM
 BAR = BEAT * 4

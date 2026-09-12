@@ -25,6 +25,7 @@ import tempfile
 
 import numpy as np
 from scipy.io import wavfile
+from scipy.signal import resample_poly
 
 
 def parse_exs(path):
@@ -32,11 +33,18 @@ def parse_exs(path):
     zones, samples, groups = [], [], []
     pos = 0
     while pos + 84 <= len(data):
-        if data[pos + 16:pos + 20] != b"TBOS":
+        # Logic has shipped both TBOS and the older JBOS EXS container
+        # variants. Their chunk layout is the same for the fields used here.
+        if data[pos + 16:pos + 20] not in (b"TBOS", b"JBOS"):
             pos += 1  # resync (some files have padding)
             continue
         kind = data[pos + 3] & 0x0F  # high bits flag name presence
+        magic = data[pos + 16:pos + 20]
         size = struct.unpack_from("<I", data, pos + 4)[0]
+        if magic == b"JBOS":
+            # Legacy files set bit 15 as a chunk flag rather than including
+            # it in the payload byte count.
+            size &= 0x7FFF
         name = data[pos + 20:pos + 84].split(b"\x00")[0].decode("ascii", "replace")
         z = data[pos + 84:pos + 84 + size]
         if kind == 0x01 and size >= 96:  # zone
@@ -67,20 +75,30 @@ def find_audio(sample_name, exs_path):
     candidates = [os.path.join(inst_dir, sample_name)]
     mirror = inst_dir.replace("/Sampler Instruments/", "/EXS Factory Samples/")
     candidates.append(os.path.join(mirror, sample_name))
-    root = "/Library/Application Support/Logic/EXS Factory Samples"
-    hit = subprocess.run(["find", root, "-name", sample_name, "-print", "-quit"],
-                         capture_output=True, text=True).stdout.strip()
-    if hit:
-        candidates.append(hit)
+    roots = [
+        "/Library/Application Support/Logic/EXS Factory Samples",
+        "/Library/Application Support/Logic/Sampler Files",
+        "/Library/Application Support/GarageBand/Instrument Library/Sampler/Sampler Files",
+    ]
+    for root in roots:
+        if not os.path.isdir(root):
+            continue
+        hit = subprocess.run(["find", root, "-name", sample_name, "-print", "-quit"],
+                             capture_output=True, text=True).stdout.strip()
+        if hit:
+            candidates.append(hit)
     if "#" in sample_name:
         # EXS 64-byte name field truncates long names as 'prefix#HASH.ext';
         # fuzzy-match the prefix against the real (untruncated) file.
         prefix = sample_name.split("#")[0]
         ext = os.path.splitext(sample_name)[1]
-        hit = subprocess.run(["find", root, "-name", f"{prefix}*{ext}", "-print", "-quit"],
-                             capture_output=True, text=True).stdout.strip()
-        if hit:
-            candidates.append(hit)
+        for root in roots:
+            if not os.path.isdir(root):
+                continue
+            hit = subprocess.run(["find", root, "-name", f"{prefix}*{ext}", "-print", "-quit"],
+                                 capture_output=True, text=True).stdout.strip()
+            if hit:
+                candidates.append(hit)
     for c in candidates:
         if os.path.exists(c):
             return c
@@ -115,8 +133,20 @@ def main():
                     audio_cache[s["name"]] = None
                     continue
                 wav = os.path.join(td, f"src{z['sample_idx']}.wav")
-                subprocess.run(["afconvert", "-f", "WAVE", "-d", "LEI16@44100", src, wav],
-                               check=True)
+                converted = subprocess.run(
+                    ["afconvert", "-f", "WAVE", "-d", "LEI16@44100", src, wav],
+                    capture_output=True,
+                )
+                if converted.returncode != 0:
+                    # Some newer GarageBand CAFs contain AAC/ALAC at 22.05 kHz
+                    # that current afconvert builds refuse to transcode.
+                    # Decode at the native rate so EXS frame offsets remain
+                    # valid; individual zones are resampled after slicing.
+                    subprocess.run(
+                        ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+                         "-i", src, "-c:a", "pcm_s16le", wav],
+                        check=True,
+                    )
                 sr, x = wavfile.read(wav)
                 audio_cache[s["name"]] = (sr, x)
             entry = audio_cache[s["name"]]
@@ -126,6 +156,15 @@ def main():
             seg = x[z["start"]:z["end"]]
             if len(seg) < 32:
                 continue
+            if sr != 44100:
+                from math import gcd
+                divisor = gcd(sr, 44100)
+                if np.issubdtype(seg.dtype, np.integer):
+                    scale = float(max(abs(np.iinfo(seg.dtype).min),
+                                      np.iinfo(seg.dtype).max))
+                    seg = seg.astype(np.float32) / scale
+                seg = resample_poly(seg, 44100 // divisor, sr // divisor)
+                sr = 44100
             fname = f"note{z['keylo']:03d}_v{z['vello']:03d}-{z['velhi']:03d}_{i:03d}.wav"
             wavfile.write(os.path.join(out_dir, fname), sr, seg)
             manifest.append({**{k: int(v) if isinstance(v, (int, np.integer)) else v

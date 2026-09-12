@@ -1,123 +1,116 @@
 # The Headless Studio
 
-**Make finished records with Python. No DAW.**
+Make music with Python: explicit scores, reusable performances, inspectable
+mixes and verified delivery files. The September 2026 rebuild adds new versions
+of **Sign-Off** and **The Quiet Hours**, a repaired sampler, and three examples
+that work without external samples or plugins.
 
-This is a complete music-production pipeline that lives entirely in code.
-It generates a band's performance as note events, renders each instrument
-through real VST3/AU plugins, samplers, and synthesis — no GUI, no DAW open
-— and mixes down to a finished, mastered track from one `python` command.
+[Listen](https://clintjohnson.cloud/headless-studio/music.html) ·
+[Read the intermediate book](https://clintjohnson.cloud/headless-studio/book.html) ·
+[What changed](https://clintjohnson.cloud/headless-studio/rebuilding-the-albums.html)
 
-It's the real thing I use to make albums, released free and open for anyone
-who wants to build the same. In it for the love of the game.
+## Start here — no sample library required
 
-📖 **The book** (free, every chapter): https://clintjohnson.cloud/headless-studio
-📝 **The articles**: https://clintjohnson.cloud/headless-studio
-🎵 Two albums were made with this pipeline. So can yours.
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-8b8bf5.svg)](LICENSE)
-![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)
-![No DAW required](https://img.shields.io/badge/DAW-not%20required-e94f37.svg)
-
----
-
-## What it does
-
-```
-the song, as data     →   sections, chords, patterns (plain Python lists)
-per-instrument events  →   one note list per band member, humanized
-instruments            →   FluidSynth · real VST3/AU plugins · samplers · synthesis
-effects                →   each member's amp/pedal chain (real plugins, headless)
-the mix                →   gains + one shared convolution "room"
-the record             →   mastered WAV + per-instrument stems that null
-```
-
-Every arrow is a plain function over NumPy arrays. The whole book explains
-each stage; this repo is the working code behind it.
-
-## Quickstart
+Python 3.9 or newer:
 
 ```bash
 git clone https://github.com/clintuitive/headless-studio
 cd headless-studio
-pip install -r requirements.txt
-
-# grab a free General MIDI soundfont (see "Assets" below), then:
-python scripts/generate_modern_darkwave_band.py
-# → writes a finished track to Tracks/
+python -m venv .venv
+# macOS/Linux: source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python scripts/generate_portable_samples.py --piece afterimage
 ```
 
-That script is the reference implementation — a full band (bass, two
-guitars through a real amp-sim, drum-machine samples, pad) rendered and
-mixed from scratch. Read it top to bottom; it's commented as a tutorial.
+This writes a float WAV mix, dry buses, processed stems, score and manifest
+under `Tracks/portable/afterimage/`. Install FFmpeg on your system PATH to also
+produce a 24-bit WAV and 192k MP3. Try `--piece open-window` for an ambient
+sketch or `--piece night-transit` for a more rhythmic one. These sketches are
+teaching examples, not the album masters; their peak-controlled exports do
+not claim a particular integrated loudness.
 
-## What's inside
+Use `--remix` to reuse a sketch's saved dry performance after changing the mix.
+Regenerate sources after composition or synthesis changes.
 
-| Script | What it demonstrates |
+## The rebuilt albums
+
+See [album setup and rendering](scripts/album_v2/README.md).
+`sign_off.py` and `quiet_hours.py` hold individual motifs, harmonies and forms.
+Sign-Off combines broadcast damage with gentler ambient pieces; its drums
+bypass the timing warp. The Quiet Hours retains Slow Rain's composition and
+selected new performance; the other eleven pieces have new writing.
+
+```bash
+python scripts/check_album_assets.py --asset-root /path/to/assets
+python scripts/album_v2/render.py --album sign-off --track 2 \
+  --asset-root /path/to/assets --output-dir Tracks/rebuilt
+```
+
+The sampled albums require independently obtained assets: LM-2 drum hits,
+extracted SteinwayPiano and Mellotron libraries. They are **not included**.
+Do not redistribute factory samples or infer asset rights from this code's
+license. The portable examples need none of those assets.
+
+The album renderer saves score → dry performance → processed float stems →
+float mix → delivery WAV/MP3. `--remix` reuses dry sources; `--resume` verifies
+code/score, master and recorded asset hashes before skipping a track. A
+nonlinear shared music bus remains a group stem; its dry instrument inputs
+are available for rebalancing. Processed float stems reconstruct the float
+mix within numerical tolerance, before final PCM dither.
+
+September masters have passed technical delivery checks. The replacement
+DistroKid forms are prepared but **not submitted**; original streaming
+editions remain live. The website's rebuilt players contain the new audio.
+AI contributed writing, arrangement and code; the audio was rendered with
+Python synthesis/sample playback, without generated vocals or a generative
+audio service. Technical verification does not replace critical listening.
+
+## Code map
+
+| Path | Purpose |
 |---|---|
-| `generate_modern_darkwave_band.py` | **Start here.** The full band pipeline: MIDI events → FluidSynth buses → real amp-sim plugins → shared room → mix |
-| `generate_album_sign_off.py` | Album engine + from-scratch synthesis (oscillators, FM, tape-wow) |
-| `generate_album_quiet_hours.py` | Album engine driving an extracted sampler (Steinway, Mellotron) |
-| `exs_extract.py` | Parser for Apple's undocumented EXS sampler format |
-| `render_ample_bass.py` | Hosting an Intel-only plugin via a Rosetta subprocess |
-| `audition_drum_kits.py` | Render one groove through eight real drum machines to A/B them |
-| `generate_postrock_epic.py` · `_hammock.py` · `_ambient.py` | Long-form post-rock arrangements |
-| `generate_*` (others) | The rest of the studio — darkwave, synthwave, coldwave, ambient, sequences |
+| `scripts/generate_portable_samples.py` | Three self-contained teaching sketches |
+| `scripts/music_engine/` | Events, sampler, audio helpers and optional plugin bridges |
+| `scripts/album_v2/` | New album scores, renderer and studio delivery packaging |
+| `scripts/tests/` | Sampler regressions, event and score checks |
+| `scripts/generate_studio_auditions.py` | Audition source and DSP used by the rebuild |
+| `scripts/generate_album_*.py` | Original album engines; retained for comparison and Slow Rain's writing |
+| Other `scripts/generate_*.py` | Legacy studio experiments with extra assets/plugin setup |
+| `publication/` | Maintained site and intermediate manuscript sources |
 
-## Assets (not included — here's where to get them free)
+The original plugin examples remain useful, but many contain local asset or
+plugin paths. They are not the minimal quickstart. Install
+`requirements-plugins.txt` and the documented native libraries/plugins for
+those rigs. Audio assets, native plugins and GUI compatibility differ by OS.
+No claim is made that every legacy rig has been validated on every platform.
 
-The code is MIT-licensed and free. The *sounds* aren't mine to
-redistribute, so grab these once and point the scripts at them:
+## Verification
 
-- **GeneralUser GS** soundfont (free) — https://schristiancollins.com/generaluser.php
-  Put it in `Soundfonts/`. (Some scripts use FluidR3 GM, shipped by
-  `apt install fluid-soundfont-gm` or many free mirrors.)
-- **Neural Amp Modeler** VST3 (free) — https://www.neuralampmodeler.com/
-  and free amp captures from https://tonehunt.org
-- **Drum-machine one-shots** (free) — https://github.com/smpldsnds/drum-machines
-  → `Samples/<machine>/`
-- **Impulse responses** for the room reverb (free) — Voxengo's IR pack.
-- **GarageBand factory library** — already on your Mac; `exs_extract.py`
-  pulls it into your own sampler (for your own use; don't redistribute the
-  samples).
-
-Full setup, per-OS, is in the book's Appendix A.
-
-## Requirements
-
-Python 3.9+, and:
-
-```
-pedalboard   # Spotify's headless plugin host
-pyfluidsynth # the FluidSynth binding
-numpy scipy  # audio is NumPy arrays
-mido         # MIDI messages for instrument plugins
+```bash
+PYTHONPATH=scripts python -m unittest discover -s scripts/tests -v
+# PowerShell: $env:PYTHONPATH="scripts"; python -m unittest discover -s scripts/tests -v
 ```
 
-Works on macOS, Windows, and Linux — every install path is tested in CI on
-clean runners for all three (see the companion
-[headless-studio-tests](https://github.com/clintuitive/headless-studio-tests)
-repo).
+The current core tests and portable render/remix checks were run on macOS
+with Python 3.9, NumPy 2.0.2, SciPy 1.13.1 and FFmpeg 8.1.2. CI runs core
+tests and a portable smoke render; it does not validate proprietary plugins,
+private album libraries or musical quality.
 
-## The book
+## Publish the book and site locally
 
-This repo is the code; the [book](https://clintjohnson.cloud/headless-studio)
-is the *why* — 15 chapters and 5 appendices, free in full, written for an
-intermediate programmer with no audio background. It walks the whole system:
-hosting plugins headlessly, rescuing incompatible plugins, reverse-
-engineering the EXS format, building a sampler, synthesis from oscillators,
-arranging as data, humanization, mixing, and stems that provably sum to the
-master. Start with
-[chapter 1](https://clintjohnson.cloud/headless-studio/the-case-for-a-headless-studio.html).
+```bash
+python -m pip install -r publication/requirements.txt
+python publication/build_epub.py
+python publication/build.py
+```
+
+The site is written to `publication/site/`; building never deploys it.
+Album previews are hosted on the website and excluded from Git. The old
+technical manuscript is archival; the intermediate edition is maintained.
 
 ## License
 
-[MIT](LICENSE) — do whatever you like with the code. Attribution is
-appreciated but not required.
-
-## Support
-
-This is free and always will be. If it saved you an afternoon and you feel
-like it, you can [buy me a coffee](https://buymeacoffee.com/clintjohnson) —
-entirely optional, never a wall. Enjoy, and go make something.
-
-— Clint Johnson
+[MIT](LICENSE) applies to the code. Third-party assets retain their own terms.
+The intermediate book and website prose are © Clint Johnson; the code license
+does not grant rights in third-party samples or recordings.

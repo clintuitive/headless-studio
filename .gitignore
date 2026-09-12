@@ -26,3 +26,10 @@ venv/
 .claude/
 .vscode/
 .idea/
+
+# Sessions and generated publications
+Releases/
+Auditions/
+publication/site/
+publication/downloads/
+*.epub

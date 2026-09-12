@@ -32,7 +32,15 @@ import tempfile
 import numpy as np
 from scipy.io import wavfile
 
-from generate_modern_darkwave_band import load_nam
+from music_engine import (
+    DrumSampler as EngineDrumSampler,
+    ExsSampler as EngineExsSampler,
+    cc_curve as engine_cc_curve,
+    load_nam,
+    normalize_peak as engine_normalize_peak,
+    render_external_instrument,
+    stereo as engine_stereo,
+)
 from pedalboard import (Pedalboard, Chorus, Delay, Reverb, Compressor, Gain,
                         HighpassFilter, HighShelfFilter, LowpassFilter, LowShelfFilter, PeakFilter, Mix, Chain,
                         Convolution)
@@ -657,6 +665,45 @@ def render_ample_bass(total_secs):
     return audio[:, :n_samples]
 
 
+# Shared-engine compatibility layer.  The names stay stable for older scripts
+# that import them from this module, while all new rendering runs through
+# music_engine.
+ExsSampler = EngineExsSampler
+stereo = engine_stereo
+
+
+def cc11_curve(events, total_secs):
+    return engine_cc_curve(events, total_secs, sample_rate=SR)
+
+
+def norm_peak(bus, target):
+    return engine_normalize_peak(bus, target)
+
+
+_brooklyn_sampler = EngineDrumSampler(
+    BROOKLYN_DIR,
+    sample_rate=SR,
+    rng=rng,
+    output_gain=1.3,
+)
+
+
+def render_brooklyn(events, total_secs):
+    return _brooklyn_sampler.render(events, total_secs)
+
+
+def render_ample_bass(total_secs):
+    return render_external_instrument(
+        AMPLE_NOTES,
+        total_secs,
+        python_path=X86_PYTHON,
+        helper_path=AMPLE_HELPER,
+        sample_rate=SR,
+        architecture="x86_64",
+        label="Ample Bass",
+    )
+
+
 # ---- arrangement --------------------------------------------------------------
 
 def main():
@@ -753,17 +800,30 @@ def main():
         bar_cursor += m["n_bars"]
 
     print("Rendering buses ...")
-    warm = ExsSampler(os.path.join(SAMPLES, "WarmElectric"))
-    strat = ExsSampler(os.path.join(SAMPLES, "VintageStrat"))
-    strat_neck = ExsSampler(os.path.join(SAMPLES, "VintageStrat"), pickup=0.27, deterministic=True)
-    strat_lead = ExsSampler(os.path.join(SAMPLES, "VintageStrat"), deterministic=True)
-    piano_smp = ExsSampler(os.path.join(SAMPLES, "SteinwayPiano"))
-    acoustic_smp = ExsSampler(os.path.join(SAMPLES, "AcousticGuitar"), groups=["Main"])
+    warm = ExsSampler(os.path.join(SAMPLES, "WarmElectric"), rng=rng)
+    strat = ExsSampler(os.path.join(SAMPLES, "VintageStrat"), rng=rng)
+    strat_neck = ExsSampler(
+        os.path.join(SAMPLES, "VintageStrat"),
+        rng=rng,
+        pickup=0.27,
+        deterministic=True,
+    )
+    strat_lead = ExsSampler(
+        os.path.join(SAMPLES, "VintageStrat"),
+        rng=rng,
+        deterministic=True,
+    )
+    piano_smp = ExsSampler(os.path.join(SAMPLES, "SteinwayPiano"), rng=rng)
+    acoustic_smp = ExsSampler(
+        os.path.join(SAMPLES, "AcousticGuitar"),
+        rng=rng,
+        groups=["Main"],
+    )
     mello = os.path.join(SAMPLES, "Mellotron")
-    mstr_smp = ExsSampler(mello, groups=["String Section"])
-    cello_smp = ExsSampler(mello, groups=["Cello"])
-    choir_smp = ExsSampler(mello, groups=["8 Choir"])
-    flute_smp = ExsSampler(mello, groups=["Flute"])
+    mstr_smp = ExsSampler(mello, rng=rng, groups=["String Section"])
+    cello_smp = ExsSampler(mello, rng=rng, groups=["Cello"])
+    choir_smp = ExsSampler(mello, rng=rng, groups=["8 Choir"])
+    flute_smp = ExsSampler(mello, rng=rng, groups=["Flute"])
 
     arp = stereo(strat_neck.render(EVENTS["arp"], total_secs), pan=-0.25)
     gswell_mono = strat_neck.render(EVENTS["gswell"], total_secs, attack=0.3)
