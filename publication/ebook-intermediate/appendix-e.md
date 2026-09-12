@@ -54,10 +54,12 @@ enough to search if a link drifts.
 
 ## Instruments already on your Mac
 
-- **The GarageBand factory library** — the several-GB sampler content
-  Chapter 5 unlocks (Steinway, Mellotron, kits, guitars). Free with
-  every Mac; extraction is Chapter 5, format is Appendix B, license
-  note in both.
+- **The generated sampler instrument** — run `scripts/generate_sampler_demo.py`.
+  Chapter 5 builds the sources and Appendix B describes their JSON map.
+- **Salamander Grand Piano v3** — Alexander Holm's CC BY 3.0 recordings.
+  → https://github.com/sfzinstruments/SalamanderGrandPiano
+- **VSCO 2 Community Edition** — CC0 orchestral recordings.
+  → https://github.com/sgossner/VSCO-2-CE
 - **Ample Bass P Lite II** — the free deep-sampled P-bass rescued in
   Chapter 4. → amplesound.net (free line)
 

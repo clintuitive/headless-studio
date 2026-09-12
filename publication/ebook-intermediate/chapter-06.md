@@ -177,9 +177,9 @@ nothing fills a room like a drum kit.
 - **When identical hits are wrong.** This whole chapter inverts the moment
   you want a *drummer* instead of a drum machine — identical hits on an
   acoustic kit trigger the machine-gun effect instantly. That problem was
-  already solved last chapter: extract a sampled acoustic kit (GarageBand's
-  kits have velocity layers and alternate takes) and let the
-  `ExsSampler`'s round-robin do drummer-realism. Two drum philosophies,
+  addressed last chapter: record your own acoustic hits with velocity layers
+  and alternate takes, then use `ZoneSampler` to vary the source. Its random
+  selection can repeat a take; use explicit scheduling for strict round-robin. Two drum philosophies,
   one event format.
 - **Swing.** The hardware's swing knob delays every off-beat hit by a
   fixed fraction. In code, it's a transform on the event list — and note

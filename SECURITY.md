@@ -18,6 +18,6 @@ in forks, caches, releases and artifacts separately. Never paste a suspected
 credential into a public issue.
 
 The inventory check intentionally permits only source/documentation file types
-and six explicitly reviewed publication images. Adding a new binary requires a
+and five explicitly reviewed publication images. Adding a new binary requires a
 review of its provenance and metadata before changing that allowlist. Automated
 checks detect common mistakes; they do not prove ownership or legal clearance.

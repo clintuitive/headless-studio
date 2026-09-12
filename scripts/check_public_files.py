@@ -3,7 +3,7 @@ from pathlib import PurePosixPath
 import subprocess
 
 IMAGES = {
-    "publication/images/book-cover.jpg", "publication/images/exs_zones.png",
+    "publication/images/book-cover.jpg",
     "publication/images/kick_comparison.png", "publication/images/nam_before_after.png",
     "publication/images/stems_null_test.png", "publication/images/stems_stack.png",
 }

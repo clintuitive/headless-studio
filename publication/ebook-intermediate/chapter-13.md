@@ -82,8 +82,9 @@ python scripts/album_v2/render.py --album sign-off --track 2 \
 ```
 
 The asset root contains `Samples/`. Sign-Off needs the three LM-2 one-shots
-listed in the renderer. The Quiet Hours needs extracted SteinwayPiano and
-Mellotron manifests and their WAV files. These libraries are not redistributed
+listed in the renderer. The website revision of The Quiet Hours uses the prepared Salamander piano
+and VSCO string manifests and WAVs under `Samples/OpenPiano` and
+`Samples/OpenStrings`. These libraries are not redistributed
 with the code. The portable examples work without them.
 
 Use `--remix` only when the cached dry performance is still the performance

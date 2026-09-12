@@ -217,7 +217,7 @@ def build_book(site_dir):
   <p>The whole system, free and complete: {len(chap_items)} chapters and
   {len(appx_items)} appendices, written for an intermediate programmer with no
   audio background. It walks the entire pipeline — hosting plugins headlessly,
-  rescuing incompatible ones, reverse-engineering sampler formats, synthesis
+  rescuing incompatible ones, mapping your own sample instruments, synthesis
   from scratch, arranging as data, mixing, and verifying float stems against
   the working mix. Updated September 2026 with the album rebuilds. The code is
   <a href="{GITHUB_URL}">free and open on GitHub</a>.</p>
@@ -303,7 +303,7 @@ def main():
 </a>\n"""
     hero = f"""<section class="hero">
   <h1>Run a recording studio from a Python script.</h1>
-  <p>Real VST3 amp sims, hardware drum machine samples, factory sampler libraries —
+  <p>Real VST3 amp sims, hardware drum machine samples, sample instruments —
   driven headlessly from code, rendered to finished multitrack songs.
   Start with a self-contained NumPy/SciPy sketch, then explore the studio rigs.</p>
   <p class="hero-music">Two full albums came out the other end —

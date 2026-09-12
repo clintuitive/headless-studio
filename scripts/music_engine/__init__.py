@@ -16,7 +16,7 @@ from .events import EventTimeline, cc_curve
 from .humanize import Humanizer
 from .plugins import load_nam
 from .renderers import render_external_instrument
-from .samplers import DrumSampler, ExsSampler
+from .samplers import DrumSampler, ExsSampler, ZoneSampler
 
 __all__ = [
     "apply_fades",
@@ -24,6 +24,7 @@ __all__ = [
     "DrumSampler",
     "EventTimeline",
     "ExsSampler",
+    "ZoneSampler",
     "Humanizer",
     "load_nam",
     "match_rms",

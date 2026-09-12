@@ -15,7 +15,7 @@ The package owns reusable mechanics:
 - `audio.py` — stereo panning, RMS/peak matching and fades;
 - `events.py` — named event buses and controller envelopes;
 - `humanize.py` — seeded timing and velocity drift;
-- `samplers.py` — EXS instrument and velocity-layered drum playback;
+- `samplers.py` — JSON-zone instrument and velocity-layered drum playback;
 - `plugins.py` — headless Neural Amp Modeler capture loading;
 - `renderers.py` — subprocess bridges such as Intel-only Ample Bass.
 

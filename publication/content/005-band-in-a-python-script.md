@@ -11,7 +11,7 @@ description: "The full architecture: MIDI events per band member, real amp captu
 The previous four posts built the pieces: [VST3 hosting](/headless-vst3-python.html),
 [FluidSynth instruments](/fluidsynth-midi-python.html),
 [out-of-process plugins](/incompatible-plugins-out-of-process.html), and
-[extracted sampler libraries](/garageband-exs-extraction.html). This post is
+[sample instruments made from our own sounds](/sample-instrument-python.html). This post is
 the payoff — the architecture that assembles them into a band. One command:
 
 ```bash
@@ -187,6 +187,6 @@ you know *exactly* why, forever.
 
 Everything in this series — plus the parts that didn't fit: the album-scale
 composition engine, tape-wow simulation for period-correct synths, velocity-
-layered sampler playback from extracted EXS zones, and the full mixing
+layered sampler playback from JSON zone maps, and the full mixing
 notebook — is being expanded into a book, **The Headless Studio**. Subscribe
 below and you'll hear when it lands.

@@ -35,7 +35,11 @@ def read_sample(path, sample_rate):
 
 
 class ExsSampler:
-    """Render an extracted EXS instrument from its zone manifest."""
+    """Render WAV zones from a JSON manifest; no EXS parsing or extraction.
+
+    The historical name is retained for existing album scripts.
+    New examples use the equivalent ZoneSampler alias.
+    """
 
     def __init__(
         self,
@@ -229,3 +233,7 @@ class DrumSampler:
             if end > position:
                 output[:, position:end] += signal[:, :end - position]
         return output * self.output_gain
+
+
+# Preferred public name; preserve the existing API and rendering behavior.
+ZoneSampler = ExsSampler

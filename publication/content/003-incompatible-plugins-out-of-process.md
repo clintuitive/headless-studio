@@ -159,4 +159,4 @@ out-of-process on principle; DAWs like Bitwig and Reaper arrived at the same
 architecture for the same reason.
 
 Next in the series: the drum machine that never needed a plugin at all, and
-[the 6.7 GB of sampled instruments hiding inside GarageBand](/garageband-exs-extraction.html).
+[building a sample instrument from your own sounds](/sample-instrument-python.html).
