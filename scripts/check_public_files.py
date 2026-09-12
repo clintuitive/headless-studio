@@ -37,7 +37,7 @@ for entry in entries:
             data.decode("utf-8")
         except UnicodeDecodeError:
             errors.append(name)
-        if b"\0" in data or b"version https://git-lfs.github.com/spec/v1" in data:
+        if b"\0" in data or data.startswith(b"version https://git-lfs.github.com/spec/v1\n"):
             errors.append(name)
 if errors:
     raise SystemExit("Unexpected public files (review locally): " + ", ".join(sorted(set(errors))))
