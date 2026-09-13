@@ -11,6 +11,7 @@ file + an RSS feed -- drop site/ on GitHub Pages, Netlify, or any host.
 import datetime
 import email.utils
 import html
+import hashlib
 import os
 import re
 import shutil
@@ -204,6 +205,13 @@ def build_book(site_dir):
                                    "\n".join(combined),
                                    "The complete free book, on one page.")))
 
+    # Version the download URL from its content so readers get the current EPUB.
+    epub_path = os.path.join(site_dir, "downloads", "the-headless-studio.epub")
+    epub_href = "/downloads/the-headless-studio.epub"
+    if os.path.isfile(epub_path):
+        with open(epub_path, "rb") as handle:
+            epub_href += "?v=" + hashlib.sha256(handle.read()).hexdigest()[:12]
+
     # Book landing page.
     chap_items, appx_items = [], []
     for p in parts:
@@ -223,7 +231,7 @@ def build_book(site_dir):
   <a href="{GITHUB_URL}">free and open on GitHub</a>.</p>
   <p class="book-actions">
     <a class="btn" href="/book/the-headless-studio.html">Read online</a>
-    <a class="btn btn-ghost" href="/downloads/the-headless-studio.epub" download>Download EPUB</a>
+    <a class="btn btn-ghost" href="{epub_href}" download>Download EPUB</a>
     <a class="btn btn-ghost" href="{GITHUB_URL}">Get the code &#8599;</a>
   </p>
   <p class="book-dl-note">Free EPUB for your e-reader, phone, or tablet — or
