@@ -361,3 +361,16 @@ audio { display: block; width: 100%; max-width: 42rem; margin: .6rem 0 1.5rem; }
   .site-header nav { display: flex; flex-wrap: wrap; gap: .4rem 1rem; width: 100%; }
   .site-header nav a { margin: 0; }
 }
+
+/* Let narrow screens wrap content without hiding off-screen controls. */
+main, .site-header, .site-footer, article, .book-hero { min-width: 0; }
+article, .book-hero, .site-footer { overflow-wrap: anywhere; }
+.site-header nav { max-width: 100%; }
+.highlight, article pre, article table { max-width: 100%; overflow-x: auto; }
+.album-intro { grid-template-columns: 156px minmax(0, 1fr); }
+.album-track { grid-template-columns: 2rem minmax(0, 1fr) auto; }
+audio { min-width: 0; max-width: 100%; }
+@media (max-width: 480px) {
+  .album-intro { grid-template-columns: 100px minmax(0, 1fr); }
+  .album-track { grid-template-columns: 1.4rem minmax(0, 1fr) auto; }
+}
