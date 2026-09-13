@@ -2,38 +2,44 @@
 title: Render Note Events into Audio with FluidSynth
 date: 2026-07-02
 slug: fluidsynth-midi-python
-description: Sample-position scheduling, separate instrument buses, and explicit SoundFont dependencies.---
+description: Sample-position scheduling, separate instrument buses, and explicit SoundFont dependencies.
+---
 
-An instrument renderer turns a performance into audio. The performance can be
-a list of tuples rather than a MIDI file: a sample position, an action, a
-channel, a pitch and a velocity. The same list can drive a SoundFont synth or
-the studio's [JSON-zone sampler](/sample-instrument-python.html).
+Somewhere between "here are the notes" and "here is a WAV file" sits an
+instrument. It doesn't have to be a complicated one, and the performance you
+hand it doesn't have to be a MIDI file. A list of tuples will do: a sample
+position, an action, a channel, a pitch, a velocity. That same list can drive a
+SoundFont synth or the studio's own [JSON-zone
+sampler](/sample-instrument-python.html), which is the point of keeping it that
+plain.
 
-FluidSynth is an optional route for SoundFont instruments. It requires both the
-native FluidSynth library and the `pyfluidsynth` Python binding, plus a SoundFont
-whose terms permit your use. Installing the binding alone does not supply the
-native library or the instrument recordings. Follow the installation guidance
-for your platform at [FluidSynth](https://www.fluidsynth.org/).
+FluidSynth is one route, and it's optional. It wants three things that arrive
+separately: the native FluidSynth library, the `pyfluidsynth` Python binding,
+and a SoundFont whose terms actually permit what you intend to do with it.
+Installing the binding gets you none of the other two — a fact I'd like you to
+learn faster than I did. The [FluidSynth site](https://www.fluidsynth.org/) has
+the platform-specific installation guidance.
 
-The core studio and its CI do not require this setup. The portable examples use
-NumPy and SciPy; The Quiet Hours uses prepared Salamander and VSCO samples.
-Choose the renderer that fits the source you intend to play.
+None of this is required to use the studio. The portable examples need only
+NumPy and SciPy, and The Quiet Hours plays prepared Salamander and VSCO
+samples. Pick the renderer that matches the source you want to hear.
 
 ## Schedule in frames
 
-At 44,100 Hz, half a second is frame 22,050. A frame contains one sample for
-each channel. The shared five-field event format is:
+At 44,100 Hz, half a second is frame 22,050. (A frame holds one sample for each
+channel.) Every event in the studio uses the same five fields:
 
 ```python
 (sample_position, 'on' or 'off', channel, midi_note, velocity)
 ```
 
-Write a musical duration in seconds, then convert both boundaries to integer
-frames. Pull audio up to each event, apply the event, and continue. This places
-the event at a frame boundary without waiting for a real-time audio device.
+Write your musical durations in seconds, convert both ends of each note to
+integer frames, then work through the list: pull audio up to the next event,
+apply the event, keep going. The event lands exactly on a frame boundary, and
+nothing has to wait on a real-time audio device.
 
-Here is a complete single-note example for an installed FluidSynth runtime
-and a SoundFont supplied by the reader:
+Here's a complete single note, assuming an installed FluidSynth runtime and a
+SoundFont of your own:
 
 ```python
 import numpy as np
@@ -67,23 +73,29 @@ finally:
     synth.delete()
 ```
 
-The two seconds after note-off let the release sound. The binding's returned
-16-bit sample values are converted to float before writing. For a general
-renderer, also validate sorted positions, channel and pitch ranges, paired
-note boundaries, and events beyond the requested duration.
+The note ends at one second but the file runs to three, so the release has
+somewhere to go. The binding hands back 16-bit values, which get converted to
+float before writing. If you're building something more general than a
+one-note demo, validate the rest of it too: sorted positions, channel and pitch
+ranges in bounds, every note-on paired with a note-off, nothing scheduled past
+the end of the render.
 
 ## One instrument bus at a time
 
-Several MIDI channels inside one synth share its output. If the mix needs a
-separate bass and piano fader, render them to separate buses with separate synth
-instances or a renderer that explicitly provides separate outputs.
+Several MIDI channels inside one synth all come out of the same output. If you
+want a separate bass fader and piano fader — and you will — render them to
+separate buses, using separate synth instances or a renderer that hands you
+separate outputs on purpose.
 
-Same-pitch overlaps need care. A MIDI note-off does not carry a unique voice
-identifier. The custom zone sampler supports voice IDs for explicit pairing;
-ordinary five-field events use its documented FIFO pairing. Do not assume that
-a different synth interprets ambiguous overlapping notes the same way.
+Overlapping notes at the same pitch are the classic trap. A MIDI note-off
+carries no voice identifier, so something has to decide which of two sounding
+middle Cs it ends. The zone sampler accepts explicit voice IDs for that; plain
+five-field events fall back to its documented first-in, first-out pairing.
+Don't assume another synth resolves the same ambiguity the same way.
 
-Record the SoundFont identity, program selection, sample rate and runtime
-version with the result. A reproducible event list is only half the performance:
-the instrument receiving it matters too. Save the dry float WAV so a later
-mix change can reuse the actual performance, not merely its instructions.
+One last thing worth writing down: the SoundFont's identity, the program you
+selected, the sample rate and the runtime version, all recorded with the
+result. A reproducible event list is only half a performance. The instrument
+that received it is the other half. And save the dry float WAV, so that when
+you change your mind about the mix next week you're reusing the actual
+performance rather than re-deriving it from instructions.

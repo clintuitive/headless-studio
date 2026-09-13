@@ -48,6 +48,13 @@ to follow along. If you can read a `for` loop and a function definition in
 any language, you're equipped; everything Python-specific gets explained
 the first time it appears.
 
+One note on the examples in this chapter. The amps, the bass and the drum
+machine comparison come from earlier guitar-driven work in the same studio, because
+they make the argument fastest. The two albums this book goes on to build —
+*Sign-Off* and *The Quiet Hours* — use synthesis and sampled instruments
+instead, and you'll meet their actual sources from Chapter 5 onward. Same
+scripts, different band.
+
 But first I owe you an argument for *why* anyone would do this.
 
 ## What a DAW actually is
@@ -164,9 +171,8 @@ I have?
 
 And it compounds. The band I built for one song — the guitar rig, the
 human-timing engine, the shared room reverb — played the *next* song the
-day I wrote its chords. There's a twelve-track album on my drive that
-exists because the cost of one more song had fallen to: describe it,
-listen, revise.
+day I wrote its chords. Both of the albums on my drive exist because the
+cost of one more song had fallen to: describe it, listen, revise.
 
 ## What this costs you
 

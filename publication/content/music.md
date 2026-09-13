@@ -4,9 +4,13 @@ slug: music
 description: Listen to Sign-Off and The Quiet Hours, plus self-contained Python studio sketches.
 ---
 
-Music by Clintuitive. These recordings use Python synthesis and sample
-playback, with AI assistance in writing, arrangement and production. No
-generated vocals or external generative-audio service was used.
+Two albums by Clintuitive, both of them rendered by Python scripts rather than
+played into a microphone. Everything you hear is synthesis and sample playback,
+written, arranged and produced with AI assistance and a lot of listening. There
+are no generated vocals here, and no external generative-audio service was
+involved at any point.
+
+Press play and let one run through. They were sequenced to be heard in order.
 
 <section class="album-player" id="sign-off-listen" aria-label="Sign-Off album player">
 <div class="album-intro"><img src="/downloads/rebuilt-2026/sign-off/cover.png" alt="Sign-Off album artwork" width="176" height="176" loading="lazy"><div><p class="album-eyebrow">CLINTUITIVE · ALBUM</p><h2>Sign-Off</h2><p class="album-description">A late-night broadcast. Worn textures, steady rhythms, and room to dream.</p><p class="album-length">12 tracks · 28:19</p></div></div>
@@ -56,21 +60,31 @@ generated vocals or external generative-audio service was used.
 
 ### Instrument credits
 
-Piano: [Salamander Grand Piano v3](https://github.com/sfzinstruments/SalamanderGrandPiano)
-by Alexander Holm, with mapping by kinwie and retuning by Markus Fiedler,
-under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
-The samples were onset-adjusted, retuned and performed for these recordings.
-Strings: [VSCO 2 Community Edition](https://github.com/sgossner/VSCO-2-CE),
-by Sam Gossner/Versilian Studios and Simon Dalzell/Ivy Audio, with sample cutting
-by Elan Hickler/Soundemote, under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
-The quiet sustain layers were normalized and extended with crossfades.
-[Download the credits](/downloads/open-instruments-2026/the-quiet-hours/CREDITS.txt).
+The piano on *The Quiet Hours* is
+[Salamander Grand Piano v3](https://github.com/sfzinstruments/SalamanderGrandPiano)
+by Alexander Holm, with mapping by kinwie and retuning by Markus Fiedler, under
+[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). I adjusted the
+onsets, retuned the roots and performed it from scripts for these recordings.
+
+The strings are [VSCO 2 Community Edition](https://github.com/sgossner/VSCO-2-CE)
+by Sam Gossner/Versilian Studios and Simon Dalzell/Ivy Audio, with sample
+cutting by Elan Hickler/Soundemote, under
+[CC0](https://creativecommons.org/publicdomain/zero/1.0/). The quiet sustain
+layers were normalized and extended with crossfades so they could hold a long
+note without wobbling.
+
+Sign-Off is different: its pitched sounds are synthesized from scratch, and its
+drums come from three LM-2 one-shots kept outside the public repository.
+
+[Download the full credits](/downloads/open-instruments-2026/the-quiet-hours/CREDITS.txt).
 
 ## Self-contained studio sketches
 
-These examples run from a clean GitHub checkout using NumPy and SciPy.
-They demonstrate distinct arrangements and cached mix revisions without
-external samples or plugins. FFmpeg adds the WAV/MP3 delivery exports.
+These three run from a clean GitHub checkout with nothing but NumPy and SciPy —
+no samples to download, no plugins to install, no licence to read first. They
+are small on purpose, but each one is a complete piece with its own arrangement
+and its own cached mix revisions. (FFmpeg, if you have it, adds the WAV and MP3
+exports.) If you want to poke at the machinery, start here.
 
 <h3>Afterimage</h3><audio controls preload="none" aria-label="afterimage"><source src="/downloads/portable/afterimage.mp3" type="audio/mpeg"></audio>
 
@@ -80,11 +94,14 @@ external samples or plugins. FFmpeg adds the WAV/MP3 delivery exports.
 
 ## Streaming
 
-Find streaming links as they become available on the release pages: [Sign-Off](https://distrokid.com/hyperfollow/clintuitive/sign-off-2)
-and [The Quiet Hours](https://distrokid.com/hyperfollow/clintuitive/the-quiet-hours-3).
-You can listen to both albums in full on this page.
+Streaming links turn up on the release pages as they go live —
+[Sign-Off](https://distrokid.com/hyperfollow/clintuitive/sign-off-2) and
+[The Quiet Hours](https://distrokid.com/hyperfollow/clintuitive/the-quiet-hours-3).
+No hurry, though: both albums play in full right here.
 
-Read [how the albums are made](/rebuilding-the-albums.html), explore the [free book](/book.html),
-or get the [source code](https://github.com/clintuitive/headless-studio).
+If you want to know how any of it was put together, read
+[how the albums are made](/rebuilding-the-albums.html), take the
+[free book](/book.html), or go straight to the
+[source code](https://github.com/clintuitive/headless-studio).
 
 <script src="/static/album-player.js?v=1" defer></script>

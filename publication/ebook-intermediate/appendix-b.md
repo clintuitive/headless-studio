@@ -1,9 +1,10 @@
 # Appendix B — The Sample Instrument Manifest
 
-Chapter 5's instrument uses a JSON list and WAV files. This is the input to
-`music_engine.ZoneSampler`, also available under the historical name
-`ExsSampler`. Neither name grants rights to a sample library. The public
-teaching workflow generates its own recordings.
+This is the reference for the instrument format Chapter 5 builds: a JSON list
+and a folder of WAV files. It's the input to `music_engine.ZoneSampler`, which
+is also available under the historical name `ExsSampler` so older scripts keep
+working. Neither name grants rights to anybody's sample library — the teaching
+workflow generates its own recordings for exactly that reason.
 
 ## Folder layout
 
@@ -19,12 +20,12 @@ instrument/
   tone-72-bright.wav
 ```
 
-Run `python scripts/generate_sampler_demo.py` to create this example under
+Run `python scripts/generate_sampler_demo.py` to create this under
 `Tracks/sampler-demo/`. All six sounds are synthesized locally.
 
 ## Zone fields
 
-`manifest.json` contains a list of objects:
+`manifest.json` is a list of objects:
 
 ```json
 [
@@ -41,8 +42,8 @@ Run `python scripts/generate_sampler_demo.py` to create this example under
 ]
 ```
 
-The complete demonstration has six objects. This abbreviated example contains
-only one, so it does not show the full keyboard and velocity coverage.
+The real demonstration has six of these; the one above is abbreviated, so it
+doesn't show full keyboard and velocity coverage.
 
 | Field | Meaning |
 |---|---|
@@ -53,36 +54,45 @@ only one, so it does not show the full keyboard and velocity coverage.
 | `group` | Optional articulation label, usable for group filtering |
 | `file` | WAV filename relative to the instrument directory |
 
-Use MIDI notes 0–127 and positive note-on velocities 1–127. A velocity-zero
-note-on is treated as note-off. Prefer complete coverage of the notes and
-velocities used by your score. The player has nearest-root and velocity
-fallbacks, but those are not substitutes for a deliberately mapped instrument.
+Use MIDI notes 0–127 and note-on velocities from 1 to 127. A note-on with
+velocity zero is treated as a note-off, a MIDI convention that predates most of
+us and isn't going anywhere.
 
-If several zones match, deterministic mode selects the first. Otherwise the
-engine selects among them using its random generator. Supply a seeded generator
-for repeatable performances. Group filters match substrings in group labels,
-so choose labels that do not accidentally overlap.
+Aim for complete coverage of the notes and velocities your score actually uses.
+The player does have nearest-root and velocity fallbacks, and they will keep
+you from silence — but a fallback is a rescue, not a mapping decision, and it
+tends to sound like one.
+
+If several zones match a note, deterministic mode selects the first; otherwise
+the engine picks among them with its random generator, so supply a seeded
+generator when you want repeatable performances. Group filters match substrings
+in group labels, which means labels that accidentally contain one another will
+accidentally match. Name them apart.
 
 ## Audio and event conventions
 
-WAV input may be integer PCM or floating point. Source sample rates are
-converted to the requested rendering rate. Stereo preservation is optional;
+WAV input may be integer PCM or floating point, and source sample rates are
+converted to the rendering rate. Stereo preservation is optional:
 `stereo_output=True` returns two channels in channel-by-frame order. SciPy
-expects frame-by-channel data when writing a stereo WAV, so transpose the
-rendered array.
+wants frame-by-channel data when writing a stereo WAV, so transpose the
+rendered array before you write it — this is the same trap as Chapter 3's, from
+the other direction.
 
-Events have the form `(sample_position, kind, channel, note, value)`, where `kind` is
-`on` or `off`. An optional sixth value identifies a voice. Without explicit
-voice IDs, overlapping notes of the same channel and pitch use first-in,
-first-out note-off matching. Negative event times are rejected.
+Events take the form `(sample_position, kind, channel, note, value)`, where
+`kind` is `on` or `off`. An optional sixth value identifies a voice. Without
+explicit voice IDs, overlapping notes on the same channel and pitch are matched
+first-in, first-out. Negative event times are rejected outright.
 
-The current player reads each zone's WAV as its source; it does not use old
-container `start` or `end` offsets. Prepare each source recording as a separate
-WAV. Sustain-loop metadata is not implemented in this player.
+Two things this player does not do. It reads each zone's WAV as the whole
+source, ignoring the `start` and `end` offsets that older container formats
+used — so prepare each recording as its own trimmed WAV file. And it implements
+no sustain-loop metadata, which means a note can't be held longer than its
+recording.
 
 ## Provenance
 
-`provenance.json` is a companion record, not a required sampler input. The
-example records its synthesis method, sample rate and WAV hashes. For external
-recordings, also retain source and permission records. A permissive code license
-does not replace the terms governing the recordings themselves.
+`provenance.json` is a companion record, not something the sampler reads. The
+example stores its synthesis method, sample rate and WAV hashes. For external
+recordings, keep the source and permission records alongside as well — a
+permissive code licence has nothing to say about the terms governing somebody
+else's recordings, however tidy it would be if it did.

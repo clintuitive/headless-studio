@@ -173,3 +173,7 @@ repeating a song. Treat this template as an example to depart from.
 The arrangement specifies the musical positions. Chapter 9 turns them into
 performed note boundaries, keeping related gestures together and deciding
 which parts should provide a stable rhythmic reference.
+
+---
+
+*Next — Chapter 9: Performance Timing and a Stable Beat.*

@@ -1,17 +1,26 @@
 # Chapter 9 — Performance Timing and a Stable Beat
 
-Timing has a musical shape. A pianist can lean into a phrase, linger at its
-end, or roll a chord across the keyboard. Adding unrelated random offsets to
-every note is a poor substitute for those decisions.
+Timing has a shape. A pianist leans into a phrase, lingers at its end, rolls a
+chord across the keyboard because the hand arrives in an order. None of that is
+random, and this is the chapter where I talk you out of the first thing
+everyone tries.
 
-The studio treats performance as a step between the score and the instrument.
-The score says what happens in musical time; the performance places related
-note boundaries on a shared timeline and assigns articulation and velocity.
-The saved events are what the instrument actually receives.
+The first thing everyone tries is adding a small random offset to every note.
+It's one line, it's satisfying to write, and it doesn't work. What it produces
+isn't a human player; it's a machine with a tremor. Real timing deviations are
+*correlated* — the notes of a chord move together, a phrase drifts as a unit,
+the player is late because the last bar was busy. Independent jitter throws all
+that structure away and keeps only the noise.
+
+So the studio treats performance as a genuine stage between the score and the
+instrument. The score says what happens in musical time. The performance places
+related note boundaries on a shared timeline, and decides articulation and
+velocity. What the instrument actually receives is the result.
 
 ## Move both ends of a note
 
-The Quiet Hours renderer uses this smooth mapping, with `t` measured in seconds:
+The Quiet Hours uses a smooth mapping from score time to performed time, with
+`t` in seconds:
 
 ```python
 import numpy as np
@@ -20,13 +29,21 @@ def warp(t):
     return t + .20 * np.sin(2 * np.pi * t / 16) + .055 * np.sin(2 * np.pi * t / 4)
 ```
 
-The long cycle creates phrase-level movement; the shorter cycle adds a smaller
-variation. These settings are choices for this record, not universal values
-for a convincing performance. The mapping remains increasing at these settings,
-so later score positions remain later in the performance.
+Two cycles: a sixteen-second one that creates phrase-level movement, and a
+four-second one adding a smaller variation on top. Because every note consults
+the same function, notes that are close together in the score stay close
+together in the performance — which is exactly the correlation that random
+jitter destroys.
 
-Apply the same map to the start and end. Moving only the start changes the
-note's duration for an unrelated reason:
+Two things worth noting. These particular numbers are choices for this record,
+not universal constants for a convincing performance; treat them as a starting
+point to argue with. And at these settings the mapping stays increasing, so a
+note later in the score is still later in the performance. Push the
+coefficients far enough and it would stop being monotonic, at which point your
+music would begin playing backwards in places, which is a fun way to spend an
+evening but not what anyone ordered.
+
+Now the important part. Apply the map to the start *and* the end:
 
 ```python
 rate = 44100
@@ -41,30 +58,46 @@ performed = [
 ]
 ```
 
-The first field is now an integer frame position. The final field identifies
-this particular voice. Repeated notes at the same pitch can overlap without
-a later note-off accidentally ending the wrong voice. The zone sampler also
-accepts five-field events and pairs them FIFO; explicit IDs remove ambiguity
-when constructing complex performances.
+Move only the start and you've changed the note's *duration* as a side effect —
+a note that was meant to last a beat now lasts a beat plus however much the
+warp happened to shift it. Nobody decided that. Move both ends and the note
+keeps its intended length while sitting where the performance put it. The
+`max(start + .03, ...)` floor just guarantees the note never collapses to
+nothing.
+
+The first field is an integer frame position, as always. The sixth field is new:
+a voice ID. Repeated notes at the same pitch can now overlap without a later
+note-off accidentally ending the wrong one — which is a real hazard the moment
+a performance starts moving note boundaries around. The zone sampler still
+accepts plain five-field events and pairs them first-in, first-out; explicit
+IDs simply remove the ambiguity when you're building something complicated.
 
 ## Velocity and articulation have different jobs
 
-Write strong and weak notes into the phrase before adding variation. Velocity
-can select a different recording in a layered instrument, so a small change
-can affect attack character as well as loudness. Listen across layer boundaries
-instead of assuming the response is smooth.
+Write the strong and weak notes into the phrase *before* you add any variation.
+A phrase that has no shape at velocity 64 will not acquire one from randomness.
 
-Articulation controls how long a note is held. In the piano renderer, supporting
-parts can release earlier than the melodic line. Apply that shortening after
-the shared time map so it remains a deliberate relationship between voices.
+Remember too that velocity can select a different recording in a layered
+instrument — Chapter 5's soft and bright layers, or a real piano library's
+dozen. So a small velocity change can alter attack character as well as
+loudness, and it can do so suddenly, at a layer boundary. Listen across those
+boundaries rather than assuming the response is smooth.
 
-Chord rolls belong in the score or performance rule. A consistent upward roll
-is a gesture; independent random offsets on every chord tone are a different
-sound. Choose the one the passage calls for.
+Articulation is a separate control: how long the note is held. In the piano
+renderer, supporting parts release earlier than the melodic line, which keeps
+the texture from turning into mud while the melody still sings. Apply that
+shortening *after* the shared time map, so it stays a deliberate relationship
+between voices rather than an accident of two maps disagreeing.
+
+And chord rolls belong in the score or in an explicit performance rule. A
+consistent upward roll is a gesture — a hand moving in a direction.
+Independent random offsets on every chord tone are something else entirely, and
+the difference is instantly audible. Choose the one the passage wants.
 
 ## Keep randomness local and repeatable
 
-Where the renderer uses random choices, derive a seed from the track and part:
+Where the renderer does use random choices, it derives the seed from the track
+and the part:
 
 ```python
 import hashlib
@@ -75,25 +108,41 @@ def part_rng(title, part):
     return np.random.default_rng(seed)
 ```
 
-This prevents a change in one instrument from consuming another instrument's
-random sequence. It does not make every edit local within a part: inserting
-an extra draw can still change later draws from that generator. Save the
-performed events and dry audio when you need an exact comparison.
+Without this, every part draws from one shared generator, and adding a note to
+the bass silently re-rolls the guitar. You change one thing, and something
+unrelated changes too — the exact failure that Chapter 1's determinism argument
+exists to prevent.
 
-The Quiet Hours' main timing map is deterministic. It does not need per-note
-random jitter to create movement. Seeded variation is one tool, not a required
-ingredient in every performance.
+Be clear about what it doesn't fix, though. Randomness is now local to each
+part, but it isn't local *within* a part: insert an extra draw near the start
+and every later draw from that generator shifts. When you need an exact
+comparison, save the performed events and the dry audio. Those are the only
+real guarantee.
+
+Worth saying plainly: The Quiet Hours' main timing map is fully deterministic.
+It doesn't need per-note random jitter to create movement, and it doesn't
+sound stiff without it. Seeded variation is one tool among several, not a
+required ingredient.
 
 ## Let the rhythm provide a reference
 
-Sign-Off places its drum attacks on the final tempo grid. Its pitched material
-passes through slowdown and warble afterward. That is an audio transformation,
-not the same operation as mapping piano note boundaries before playback.
+Sign-Off puts its drum attacks on the final tempo grid and sends its pitched
+material through slowdown and warble afterwards. That's an audio transformation
+applied to rendered sound — a different operation entirely from mapping note
+boundaries before playback, even though both make timing move. One edits the
+schedule; the other edits the waveform.
 
-A stable beat can make pitch drift feel intentional. Conversely, an unaccompanied
-piano phrase can carry its own timing without a drum clock. Decide which part
-provides the reference before applying timing effects across a mix.
+The musical principle underneath is the same in both records: a stable beat
+makes pitch drift feel intentional. Take the beat away and drift just sounds
+broken. Conversely, an unaccompanied piano phrase carries its own time and
+needs no drum clock at all. Decide which part is the reference before you start
+applying timing effects across a mix.
 
-Listen to accents, chord attacks, note releases and transitions separately.
-Keep the performance fixed while comparing mixes, then regenerate it only when
-the timing or articulation is the thing you intend to change.
+When you listen back, listen to one thing at a time: accents, then chord
+attacks, then note releases, then transitions. And keep the performance fixed
+while you compare mixes. Regenerate it only when timing or articulation is the
+thing you actually meant to change.
+
+---
+
+*Next — Chapter 10: Give Each Bus a Role in the Mix.*

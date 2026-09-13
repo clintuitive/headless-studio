@@ -5,9 +5,14 @@ slug: sample-instrument-python
 description: "Create a small instrument from synthesized tones, describe it with a JSON zone map, and play it through a Python sampler without a factory library."
 ---
 
-A sample instrument has two parts: recordings and a map that tells the player
-which recording to use for each note. Build the recordings first, describe
-the zones, then feed the sampler a performance with explicit note boundaries.
+A sample instrument is two things: some recordings, and a map telling the
+player which recording answers which note. That's genuinely all it is. The
+commercial libraries are enormous and clever, but the shape underneath is a
+folder of WAVs and a lookup table, and once you've built one yourself the
+mystery goes away for good.
+
+So: make the recordings, describe the zones, hand the sampler a performance
+with explicit note boundaries.
 
 ## Start with an instrument we generate ourselves
 
@@ -18,13 +23,13 @@ python -m pip install -r requirements.txt
 python scripts/generate_sampler_demo.py --output-dir Tracks/sampler-demo
 ```
 
-The command creates six float WAV files, a JSON manifest, a provenance record,
-and an eight-second `demo.wav`. It uses NumPy and SciPy; no plugin, sample
-pack or external download is involved in generating the sounds.
+You get six float WAV files, a JSON manifest, a provenance record and an
+eight-second `demo.wav`. NumPy and SciPy do all of it — no plugin, no sample
+pack, nothing downloaded.
 
-There are three root notes: MIDI 48, 60 and 72. Each root gets a soft and a
-bright recording. A fundamental sine wave establishes the pitch, a second
-harmonic changes the tone, and an envelope supplies an attack and decay:
+Three root notes: MIDI 48, 60 and 72. Each one gets a soft recording and a
+bright one. A fundamental sine establishes the pitch, a second harmonic changes
+the colour, and an envelope gives it an attack and a decay:
 
 ```python
 frequency = 440 * 2 ** ((root - 69) / 12)
@@ -35,13 +40,15 @@ signal = .5 * envelope * (
 )
 ```
 
-The bright layer has more second harmonic. It is a different source waveform,
-not merely a louder copy. These modest tones make the sampler's decisions easy
-to hear; they are not intended to replace a recorded piano.
+The bright layer carries more of that second harmonic. It's a genuinely
+different waveform, not the soft one turned up — which matters, because the
+whole point of a velocity layer is that playing harder changes the tone and not
+just the volume. These are modest little tones. They exist so you can hear the
+sampler making decisions, not to stand in for a recorded piano.
 
 ## Describe a zone
 
-A zone is one recording plus the range of notes and velocities it answers:
+A zone is one recording plus the range of notes and velocities it answers to:
 
 ```json
 {
@@ -56,14 +63,14 @@ A zone is one recording plus the range of notes and velocities it answers:
 }
 ```
 
-`manifest.json` is a list of these objects. Notes outside one zone belong to a
-neighboring zone; velocities 80–127 select the bright layer. Keep the source
-files beside the manifest so the instrument can move as a folder.
+`manifest.json` is a list of those. Notes past the edge of one zone belong to
+its neighbour; velocities 80–127 pick the bright layer. Keep the WAVs beside
+the manifest and the whole instrument travels as a folder.
 
-The generator also writes `provenance.json`, recording how the sounds were
-made and the SHA-256 of each WAV. A hash identifies a file; it does not prove
-permission to use an unrelated sample library. For recordings obtained from
-someone else, retain their actual license and source information too.
+The generator also writes `provenance.json`: how the sounds were made, and a
+SHA-256 for every WAV. A hash tells you which file you have. It does not tell
+you that you're allowed to use it — for anything you didn't record yourself,
+keep the actual license and source information alongside.
 
 ## Play the map
 
@@ -79,28 +86,34 @@ events = [(0, "on", 0, 64, 70), (round(0.6 * 44100), "off", 0, 64, 0)]
 audio = sampler.render(events, total_seconds=2.0)
 ```
 
-Run this with `PYTHONPATH=scripts`, or place it in a script under `scripts/`.
-The output is a floating-point array in channel-by-frame order. Transpose it
-before writing it with SciPy, which expects frame-by-channel audio.
+Run it with `PYTHONPATH=scripts`, or drop the file into `scripts/`. What comes
+back is a float array in channel-by-frame order, so transpose before handing it
+to SciPy, which wants frames by channels.
 
-The player selects a zone, converts its file's sample rate if needed, and
-changes playback speed by `2 ** ((note - root) / 12)`. Faster playback raises
-the pitch and shortens the recording. Note-offs and the release envelope end
-the voice; overlaps are mixed instead of replacing an earlier note.
+Inside, the player picks a zone, converts the file's sample rate if it needs
+to, and changes playback speed by `2 ** ((note - root) / 12)`. Playing faster
+raises the pitch and shortens the recording — pitch and duration are welded
+together here, which is why you record several roots instead of stretching one
+sample across the keyboard. Note-offs start the release envelope, and
+overlapping notes are added together rather than stealing each other's voices.
 
-`ZoneSampler` is the descriptive name for the existing sampler implementation.
-The player reads a JSON manifest and ordinary WAV files.
+(`ZoneSampler` is the current name for the sampler. You'll also see
+`ExsSampler` in older code; it's the same class under a historical alias.)
 
 ## Expand it with recordings you have permission to use
 
-Replace the tones with your own recordings, or with sources whose terms
-explicitly allow the intended sampling, rendering and distribution. Record
-several root notes to limit extreme pitch shifting. Add velocity layers only
-when you have recordings that justify the distinction. Listen to adjacent
-zones so changes of source do not sound like accidental edits.
+Swap the tones for your own recordings, or for sources whose terms plainly
+allow the sampling, rendering and distribution you have in mind. Record several
+root notes so you're never pitch-shifting something halfway across the
+keyboard. Add velocity layers when you have recordings that earn the
+distinction, not because the format has a slot for them. And listen across
+adjacent zones — a change of source should sound like the instrument, not like
+an editing mistake.
 
-A free download or an installed application does not by itself grant these
-permissions. Check the actual source license before using someone else's recordings.
+Worth saying plainly: a free download, or a library that came with an
+application you paid for, does not by itself grant these permissions. Read the
+actual license before you build someone else's recordings into something you
+plan to share.
 
-The next step is [arranging multiple instruments](/band-in-a-python-script.html).
-For the full manifest reference, see Appendix B of the [intermediate book](/book.html).
+Next up is [arranging several instruments together](/band-in-a-python-script.html).
+The complete manifest reference lives in Appendix B of the [book](/book.html).

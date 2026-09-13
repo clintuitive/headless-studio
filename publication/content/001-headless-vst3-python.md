@@ -2,31 +2,37 @@
 title: Driving VST3 Effects from Python
 date: 2026-07-02
 slug: headless-vst3-python
-description: An optional plugin stage for a studio built around saved performances and reproducible mixes.---
+description: An optional plugin stage for a studio built around saved performances and reproducible mixes.
+---
 
-A plugin host takes audio in, processes it, and returns audio. That makes it a
-useful stage in a Python studio: save an instrument's performance once, then
-compare effects without asking the instrument to play again.
+A plugin is a function with an expensive haircut. Audio goes in, audio comes
+out. Nothing about that shape requires a window, a mouse or a timeline — which
+is exactly why it drops so neatly into a Python studio. Render the performance
+once, save it, then push it through as many effects as your patience allows
+without ever asking the instrument to play again.
 
-The basic studio does not require plugins. Start with the self-contained
-sketches in [the repository](https://github.com/clintuitive/headless-studio):
+You don't need plugins to start. The self-contained sketches in
+[the repository](https://github.com/clintuitive/headless-studio) run on NumPy
+and SciPy alone:
 
 ```bash
 python -m pip install -r requirements.txt
 python scripts/generate_portable_samples.py --piece open-window --output-dir Tracks/demo
 ```
 
-That gives you dry buses, processed stems and a float mix. Add a plugin when
-there is a particular sound you want from it, such as an amp model or a delay.
+That gives you dry buses, processed stems and a float mix — a small complete
+record, nothing downloaded. Reach for a plugin when there's a particular sound
+you're after: an amp model you already trust, a delay with a character you
+can't be bothered to rebuild from scratch.
 
 ## Put the plugin after the saved performance
 
-Install the optional Python host with `python -m pip install pedalboard` and
-install a plugin compatible with your operating system and processor. Plugins
-are separate software; the repository does not distribute them.
+The optional host installs with `python -m pip install pedalboard`. The plugin
+itself is your problem: it has to match your operating system and processor,
+and the repository doesn't ship anyone else's software.
 
-This example processes an existing stereo float WAV through an effect. Replace
-the plugin path with your own installed effect:
+Here's the whole idea, running an existing stereo float WAV through an effect.
+Swap in the path to something you actually have installed:
 
 ```python
 import numpy as np
@@ -42,42 +48,45 @@ assert np.isfinite(processed).all()
 wavfile.write('Tracks/effected-melody.wav', rate, processed.T)
 ```
 
-A float WAV avoids guessing the scale of integer samples. The transpose is
-just as important: SciPy reads frames by channels, while this host expects
-channels by frames. Neither operation changes the sample rate.
+Two details in there will bite you if you skip them. Working in float means
+you never have to guess what scale the integer samples were stored at. And the
+transpose matters: SciPy hands you frames by channels, while the host wants
+channels by frames. Neither operation touches the sample rate.
 
-Inspect `plugin.parameters` to discover the controls the host exposes. Set
-values deliberately and record them with the mix. Parameter names and ranges
-belong to the installed plugin, so an example for one effect is not a universal
-preset for every VST3.
+Print `plugin.parameters` to see what the plugin exposes. Set the values you
+care about deliberately and write them down with the mix — parameter names and
+ranges belong to that specific plugin, so my settings for one effect mean
+nothing for yours.
 
 ## Preserve state and tails
 
-An effect may remember what happened in earlier buffers. A delay stores echoes;
-a compressor follows its envelope; an amp model can have internal state.
-Resetting the effect at every chunk changes the result. When processing in
-blocks, use the host's state-preserving mode and include enough trailing silence
-for the effect to decay. Verify that behavior with the exact host and plugin
-versions you install.
+Effects remember. A delay is holding echoes, a compressor is mid-envelope, an
+amp model has its own internal weather. Reset the plugin between chunks and you
+get a different result than you'd get processing the whole thing at once. So
+when you process in blocks, use the host's state-preserving mode, and leave
+enough trailing silence for the effect to finish decaying into. Then check that
+it behaved, with the exact host and plugin versions you installed.
 
-A plugin can also keep settings outside its automatable parameters. Prefer
-loading a preset saved through the plugin's supported interface. The repository's
-`music_engine/plugins.py` includes a Neural Amp Modeler helper for its specific
-preset layout; that is an adapter for a known format, not a general preset
-editor. A format change needs its own validation before use.
+Some plugins also keep settings that never appear as automatable parameters.
+The reliable move is to save a preset through the plugin's own interface and
+load that. The repository's `music_engine/plugins.py` has a Neural Amp Modeler
+helper that understands one specific preset layout — an adapter for a format I
+went and learned, not a general-purpose preset editor. If the format changes,
+that helper needs re-checking before you trust it.
 
 ## Keep the experiment comparable
 
-Change one effect setting while keeping the dry performance fixed. Match
-listening levels before choosing between versions. A louder render can seem
-more detailed even when the actual improvement is just gain.
+Change one setting. Keep the dry performance fixed. Match the listening levels
+before you decide anything, because a louder render sounds more detailed even
+when the only thing that improved was the gain, and you will fall for it.
 
-Save the processed bus as a float stem. If several instruments share a nonlinear
-effect, keep its combined output as a group stem: the separately processed
-inputs are not guaranteed to sum to the same result. The [mix and stem
-article](/stems-null-test.html) explains that boundary.
+Save the processed bus as a float stem. If several instruments share a
+nonlinear effect, keep the combined output as a group stem too: separately
+processed inputs are not guaranteed to sum back to the same sound. The [mix and
+stem article](/stems-null-test.html) works through where that boundary sits.
 
-Plugin loading is lazy in the shared engine. Readers can use the sampler and
-synthesis examples without configuring an optional host. If a plugin requires
-a different runtime, move that one rendering step across a [process
-boundary](/incompatible-plugins-out-of-process.html).
+Plugin loading in the shared engine is lazy, so the sampler and synthesis
+examples never ask you to configure a host you don't want. And if a plugin
+insists on a runtime the rest of your studio can't live with, push that one
+rendering step across a [process
+boundary](/incompatible-plugins-out-of-process.html) and carry on.

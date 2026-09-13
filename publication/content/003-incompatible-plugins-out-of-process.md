@@ -2,23 +2,27 @@
 title: Run an Instrument in Its Own Process
 date: 2026-07-02
 slug: incompatible-plugins-out-of-process
-description: Separate a plugin-specific runtime from the main studio with JSON events and a WAV result.---
+description: Separate a plugin-specific runtime from the main studio with JSON events and a WAV result.
+---
 
-A plugin can be useful without belonging inside the main Python process.
-Its architecture, dependencies or host requirements may differ from the rest
-of the studio. Put that instrument behind a small file-based interface:
-write events to JSON, ask a helper to render them, then read its WAV.
+Sooner or later you meet a plugin that is wonderful and impossible. It wants a
+different processor architecture, or a Python it can't share with yours, or
+native libraries that fight everything else you've installed. The temptation is
+to bend the whole studio around it. Don't. Put it in its own process and talk
+to it through files: write the events to JSON, ask a helper to render them,
+read back the WAV.
 
-The shared implementation is `scripts/music_engine/renderers.py`. It lets the
-main arrangement use one interface while a helper owns the details of a
-particular instrument and runtime.
+The shared implementation is `scripts/music_engine/renderers.py`. The
+arrangement code keeps calling one interface; the helper quietly owns all the
+awkwardness of one particular instrument.
 
 ## Keep the boundary small
 
-The parent sends a duration and note records. The helper receives two paths:
-one input JSON and one output WAV. It configures its own instrument, renders
-the complete performance and exits. The parent does not need to know which
-plugin parameter selects a preset or how the helper finds its native library.
+The parent sends a duration and a list of note records. The helper gets two
+paths — one JSON in, one WAV out. It sets up its own instrument, renders the
+whole performance and exits. The parent never learns which plugin parameter
+selects a preset, or where the helper found its native library, and that
+ignorance is the feature.
 
 ```python
 from music_engine import render_external_instrument
@@ -35,45 +39,52 @@ if audio is None:
     raise RuntimeError('The selected instrument did not render')
 ```
 
-The note fields in this example are a proposed helper contract. The bridge
-passes records through; your helper must interpret the same field names and
-units. It is not a universal instrument implementation.
+Those note fields are a contract you're proposing, not one the bridge enforces.
+It passes the records through; your helper has to agree about the field names
+and their units. There's no universal instrument hiding in here.
 
-The returned array uses channels by frames. The bridge reads the WAV at its
-actual source sample rate, resamples when necessary, converts mono to stereo,
-and pads or trims to the requested duration. Make that requested duration long
-enough for note releases and effects tails before calling the helper.
+What comes back is channels by frames. The bridge reads the helper's WAV at
+whatever rate it was actually written, resamples if it has to, promotes mono to
+stereo, and pads or trims to the duration you asked for. Which means you should
+ask for a duration generous enough to hold the note releases and any effect
+tails, because trimming happens afterwards and doesn't care about your reverb.
 
 ## Match the runtime to the instrument
 
-On a system that supports architecture translation, a helper may run under a
-different architecture from its parent. That requires a compatible interpreter,
-native dependencies and plugin. A process boundary alone does not translate
-binaries or make a plugin portable to another operating system.
+On a system with architecture translation, the helper can run under a different
+architecture from its parent — provided you have a compatible interpreter,
+compatible native dependencies and a compatible plugin. A process boundary is
+not a binary translator, and it certainly won't carry a Windows-only plugin
+onto a Mac. It just stops two incompatible things from having to share an
+address space.
 
-The bridge has an optional architecture argument for the macOS `arch` command.
-Leave it unset for a normal subprocess. Confirm the helper works on its own
-before adding it to a whole album render.
+The bridge takes an optional architecture argument for the macOS `arch`
+command. Leave it unset for an ordinary subprocess. And get the helper working
+on its own before you wire it into a twelve-track album render, unless you
+enjoy debugging by album.
 
-For a disk-streaming instrument, give its library time to initialize and
-preserve its state across render blocks. Recreating the processor every block
-can erase sustained notes or repeatedly trigger loading. Put these choices in
-the helper where they can be tested independently.
+For an instrument that streams from disk, give its library time to initialize
+and keep its state alive across render blocks. Tearing the processor down every
+block can cut sustained notes off or send it back to loading samples over and
+over. Decisions like that belong inside the helper, where you can test them
+without running everything else.
 
 ## Failure is a result you must handle
 
-The current bridge returns `None` for unavailable interpreters, empty note
-lists and reported helper failures. A caller can stop the render or choose a
-documented substitute. Quietly replacing an instrument during a delivery build
-makes the result hard to trust, so treat the chosen source as part of the
+The bridge returns `None` when the interpreter isn't available, when the note
+list is empty, and when the helper reports failure. That's a real outcome, and
+the caller has to do something about it: stop the render, or fall back to a
+substitute you've documented. What you must not do is quietly swap in a
+different instrument during a delivery build. Three months later nobody can
+tell you what's actually on the record. The chosen source belongs in the
 manifest.
 
-The bridge does not implement a timeout. For unattended work, add a bounded
-supervisor around helpers that can hang, and keep their logs. Check the produced
-WAV for its format, duration, finite samples and audible content. A zero exit
-code can still accompany silence.
+There's no timeout in the bridge. If you're running unattended, wrap helpers
+that can hang in something with a bound on it and keep their logs. Then check
+the WAV it produced — format, duration, finite samples, audible content. A zero
+exit code and thirty seconds of silence go together more often than you'd like.
 
-The portable sketches and both album render paths do not need this optional
-plugin helper. The process boundary is there for a sound that warrants it,
-while [saved dry buses](/band-in-a-python-script.html) keep that extra setup out
-of routine mix comparisons.
+None of this is needed for the portable sketches or either album render path.
+The process boundary exists for a sound that's worth the trouble, and [saved
+dry buses](/band-in-a-python-script.html) keep that setup well away from your
+routine mix comparisons.

@@ -1,24 +1,26 @@
 # Chapter 7 — Synthesis from a Few Sine Waves
 
-A synthesized source starts with numbers rather than a recorded instrument.
-That makes it a useful first render: there is no plugin to install and no sample
-library to locate. The portable sketches use a few sine waves, envelopes and
-noise to build complete arrangements.
+Every instrument so far has needed something from outside: a SoundFont, a
+plugin, a folder of recordings. This chapter needs nothing. A synthesized
+source starts from numbers, which means it starts from an equation you can read
+— and it means the first sound you make in this studio can be made on a
+laptop on a train with no internet.
 
-Run one from the repository root:
+The portable sketches are built this way. A few sine waves, some envelopes, a
+little noise, and out comes a complete arrangement:
 
 ```bash
 python scripts/generate_portable_samples.py --piece open-window --output-dir Tracks/demo
 ```
 
-Open Window is the sparse, beatless example. Afterimage and Night Transit add
+Open Window is the sparse, beatless one. Afterimage and Night Transit add
 percussion and use different tempos, melodies and amounts of pitch movement.
-All three expose composition and mix settings in one file.
+All three keep their composition and mix settings in a single file, so you can
+change something and hear the result before you've finished wondering about it.
 
 ## Frequency, phase and time
 
-A MIDI note number identifies a pitch. Note 69 is A at 440 Hz, and twelve
-semitones double the frequency:
+We've met the arithmetic twice now, so here it is doing actual work:
 
 ```python
 import numpy as np
@@ -30,25 +32,29 @@ t = np.arange(round(seconds * rate)) / rate
 signal = np.sin(2 * np.pi * frequency * t)
 ```
 
-`t` is an array of times, one per frame. Multiplying time by frequency counts
-cycles; multiplying by `2 * pi` converts cycles to radians, the input expected
-by `np.sin`. NumPy evaluates the expression for the entire array.
+`t` is an array of times, one entry per frame. Multiplying time by frequency
+counts cycles; multiplying by `2 * pi` converts cycles into radians, which is
+what `np.sin` expects. NumPy then evaluates the whole expression across the
+entire array at once — no loop, no per-sample Python, which is the only reason
+any of this runs fast enough to be enjoyable.
 
-A sine wave has one frequency. Add another at twice the frequency and the
-sound becomes brighter without changing its fundamental pitch:
+A single sine wave is one frequency and nothing else, which is why it sounds
+like a hearing test. Add another at twice the frequency and the sound gets
+brighter without its pitch changing:
 
 ```python
 signal += 0.28 * np.sin(2 * np.pi * 2 * frequency * t) * np.exp(-t * 3)
 ```
 
-The second harmonic decays faster than the fundamental. That gives the attack
-a brighter character than the tail, which is more useful for a struck sound
-than a static blend of oscillators.
+Note that the second harmonic decays *faster* than the fundamental. That's the
+detail that makes it sound struck rather than synthetic: real instruments are
+brightest at the attack and mellow as they ring. A static blend of oscillators
+never does that, and the ear notices immediately even if it can't say why.
 
 ## An envelope makes a note
 
-An oscillator does not know when a note should start or stop. An envelope is
-an array of gains that gives the sound a shape:
+An oscillator has no idea when a note begins or ends; left alone it drones
+forever. An envelope is an array of gains that gives the sound a shape:
 
 ```python
 attack = 1 - np.exp(-t / 0.008)
@@ -57,20 +63,21 @@ release = np.clip((seconds - t) / 0.05, 0, 1)
 signal *= attack * decay * release
 ```
 
-The attack rises quickly, the decay falls gradually, and the release brings
-the final samples toward zero. Abruptly cutting a waveform away from zero can
-create a click. For a pad, use a slower attack and release; the portable
-renderer uses a different envelope for its sustained harmony voice.
+The attack rises quickly, the decay falls gradually, and the release pulls the
+final samples to zero — because cutting a waveform off partway through a cycle
+produces a click, and the click is louder than you expect. For a pad, slow the
+attack and the release down; the portable renderer keeps a different envelope
+for its sustained harmony voice.
 
-These time constants are artistic parameters. Compare them over an actual
-phrase, because a pleasant isolated note can obscure the next one when its
-tail is too long.
+These time constants are artistic parameters, not settings with correct values.
+Judge them over a real phrase rather than a single note, because a tone that
+sounds lovely on its own can have a tail that smears the note after it.
 
 ## Place the sound on a bus
 
-The studio's working buses use channels by frames. A stereo bus has shape
-`(2, frame_count)`. Place a mono note at its start frame and distribute it
-between left and right channels. The portable renderer uses equal-power pan:
+The studio's working buses are channels by frames, so a stereo bus has shape
+`(2, frame_count)`. To place a mono note, we distribute it between left and
+right. The portable renderer uses an equal-power pan:
 
 ```python
 pan = -0.2                         # -1 left, 0 center, +1 right
@@ -78,40 +85,59 @@ angle = (pan + 1) * np.pi / 4
 stereo_note = signal[None, :] * np.array([[np.cos(angle)], [np.sin(angle)]])
 ```
 
-`signal[None, :]` adds a one-row dimension. Multiplying by the two gains makes
-two channels. Reserve space in the song bus for the note's release before
-adding it at its scheduled position.
+`signal[None, :]` adds a one-row dimension, turning a flat array into a single
+row; multiplying by the two gains produces two channels. The reason for the
+cosine and sine, rather than simply splitting the level in two, is that they
+keep the *power* constant as the sound moves across the stereo field — a
+straight-line pan sounds like it dips in the middle.
+
+Reserve space in the song bus for the note's release before adding it at its
+scheduled position. This is the same lesson as Chapter 2's three-second file,
+and it will be the same lesson again in Chapter 12. Audio needs room after the
+last event.
 
 ## Pitch movement belongs to a routing decision
 
 The portable sketches move the read position of the harmony and melody buses
-with a slow sinusoid. Interpolating between sample positions creates a small
-continuous change in pitch. The drums bypass that movement.
+with a slow sinusoid, interpolating between sample positions to produce a
+small, continuous pitch change — the sound of tape that isn't quite well. The
+drums bypass it entirely, exactly as Chapter 6 described.
 
-Sign-Off extends this idea with source resampling, tape motion, dropouts,
-filtering and noise. It assigns a different treatment to each track. Keep a
-steady drum clock when the contrast between stable rhythm and unstable pitched
-material is part of the sound.
+Sign-Off takes this much further: source resampling, tape motion, dropouts,
+filtering and noise, with a different treatment assigned to each track. Keep a
+steady drum clock whenever the contrast between stable rhythm and unstable
+pitched material is part of the sound, which for that record it very much is.
 
-The Quiet Hours uses performance timing instead: note boundaries follow a
-phrase-level timeline before the piano and strings render. Chapter 9 explains
-why these are different operations even though both can make rigid material
-feel less static.
+The Quiet Hours does something different that's easy to confuse with this. It
+shapes *performance timing* — where note boundaries fall — before the piano and
+strings render a single sample. Chapter 9 explains why these are genuinely
+different operations, even though both can stop rigid material feeling
+mechanical.
 
 ## Respect the available frequency range
 
-Digital audio represents frequencies below half its sample rate, called the
-Nyquist frequency. A harmonic above that boundary can fold into the audible
-range as aliasing. Filtering the resulting signal cannot selectively remove
-an alias that already overlaps the musical frequencies.
+Digital audio can only represent frequencies below half its sample rate, a
+limit called the Nyquist frequency — 22,050 Hz at our rate. Generate a harmonic
+above that and it doesn't disappear; it folds back down into the audible range
+as an **alias**, a phantom tone at a frequency nobody asked for. And once it's
+there, it's there. Filtering afterwards cannot selectively remove an alias
+that's landed on top of your music, because at that point it *is* your music,
+numerically speaking.
 
-The portable oscillator uses a small number of sine partials within a bounded
-note range. If you extend its pitch range or add harmonics, omit partials that
-would reach Nyquist. A naive sawtooth or square wave has infinitely many
-harmonics; use a suitable band-limited oscillator or a carefully filtered
-oversampling design for those sources.
+The portable oscillator uses a small number of sine partials across a bounded
+note range, which keeps it safe. If you extend the pitch range or add
+harmonics, leave out the partials that would cross Nyquist. And be careful with
+the textbook waveforms: a naive sawtooth or square wave has infinitely many
+harmonics and aliases enthusiastically at high pitches. Use a proper
+band-limited oscillator, or a carefully filtered oversampling design, when you
+want those sounds.
 
-Save the synthesized dry buses before adding the room or master gain. A
-synthesis change needs a source render. A room-balance change can reuse those
-buses. The same separation works whether a note came from an equation, a
-SoundFont, a zone map or a plugin.
+Save the synthesized dry buses before adding the room or the master gain. A
+synthesis change needs a fresh source render; a room-balance change can reuse
+what's already there. That separation works identically whether the note came
+from an equation, a SoundFont, a zone map or a plugin — which is the point of
+the whole arrangement, and the subject of the next three chapters.
+
+---
+
+*Next — Chapter 8: The Song Is a Data Structure.*

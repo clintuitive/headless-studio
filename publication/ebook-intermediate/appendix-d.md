@@ -5,7 +5,14 @@ families. Programs are numbered 0–127 here, matching
 `fs.program_select(channel, sfid, bank, program)` — some references list
 them 1–128; if your soundfont seems off by one instrument, that's why.
 
-**Bolded** entries are the ones this book's records actually use.
+This is a reference for the optional FluidSynth path in Chapter 2. Neither
+album uses General MIDI: Sign-Off's pitched sources are synthesized and The
+Quiet Hours plays prepared Salamander and VSCO samples. But a SoundFont is the
+fastest way to get a whole band making noise on a machine with nothing
+installed, and it's an excellent sketchpad.
+
+**Bolded** entries are a serviceable starting band — the handful I'd reach
+for first when roughing out an arrangement this way.
 
 | # | Piano | # | Chromatic Percussion |
 |---|---|---|---|
@@ -95,21 +102,26 @@ them 1–128; if your soundfont seems off by one instrument, that's why.
 | 118 | Synth Drum | 126 | Applause |
 | 119 | Reverse Cymbal | 127 | Gunshot |
 
-Program 120 — the joke instrument of the sound-card era — is the fret
-squeak that carries Chapter 9's most persuasive humanization. Programs
-121–127 reward similar re-examination: *Breath Noise* is a wind-player's
-byproduct waiting for the same trick.
+Program 120, *Guitar Fret Noise*, was the joke instrument of the sound-card
+era and is quietly one of the most useful things in the list. Sprinkle a few
+fret squeaks between chord changes, quiet and slightly early, and a stiff
+guitar part starts sounding like hands on strings — the same idea as
+Chapter 9's performance stage, applied to a sound rather than a schedule.
+Programs 121–127 reward the same re-examination: *Breath Noise* is a
+wind-player's byproduct waiting for exactly that trick.
 
 **The percussion exception.** MIDI channel 10 (index 9) is traditionally
 percussion: *note numbers* select drums (35/36 kicks, 38/40 snares, 42/44/46
 hats…) rather than pitches, and the program number selects a *kit*. This
-book's records skip GM drums entirely in favor of Chapter 6's real drum
+book's records skip GM drums entirely in favour of Chapter 6's real drum
 machine samples — but the channel-10 convention explains why a melody
 accidentally assigned there plays as drum hits, a rite of passage worth
 having named.
 
 **Reality check.** GM defines the *names*; your soundfont defines the
-*sounds*. In GeneralUser GS, the bolded instruments above are genuinely
-good; quality across the full 128 varies. Audition before you trust — a
-for-loop over candidate programs rendering the same phrase is Chapter 6's
-kit audition, transposed.
+*sounds*. A well-regarded free set like GeneralUser GS holds up well across
+the instruments above, but quality across the full 128 varies enormously
+within any single soundfont, and two soundfonts can disagree completely about
+what program 89 ought to sound like. Audition before you trust one — a
+for-loop over candidate programs rendering the same phrase is Chapter 6's kit
+audition, transposed, and it costs you about a minute.
